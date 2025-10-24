@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="JavaApplication1">
+  <ClassDiagramComponents>
+    <Class name="Administrator" package="cinema" visibility="public" xPosition="748.0" yPosition="578.0">
+      <Fields>
+        <Field name="bonus" type="double" visibility="private"/>
+        <Field name="calculateTotalSales" type="double" visibility="private"/>
+        <Field name="adminId" type="String" visibility="private"/>
+        <Field name="performanceGrade" type="String" visibility="private"/>
+        <Field name="updatePrices" type="String" visibility="private"/>
+        <Field name="reviewCashRegistrer" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Customer" package="cinema" visibility="public" xPosition="132.0" yPosition="343.0">
+      <Fields>
+        <Field name="vip" type="boolean" visibility="private"/>
+        <Field name="customerId" type="String" visibility="private"/>
+        <Field name="invoices" type="Invoice[]" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Employee" package="cinema" visibility="public" xPosition="1081.0" yPosition="343.0">
+      <Fields>
+        <Field name="salary" type="double" visibility="private"/>
+        <Field name="address" type="String" visibility="private"/>
+        <Field name="employeeId" type="String" visibility="private"/>
+        <Field name="position" type="String" visibility="private"/>
+        <Field name="startDay" type="Date" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Invoice" package="cinema" visibility="public" xPosition="22.0" yPosition="578.0">
+      <Fields>
+        <Field name="membership" type="boolean" visibility="private"/>
+        <Field name="date" type="Date" visibility="private"/>
+        <Field name="paymentMethod" type="String" visibility="private"/>
+        <Field name="invoiceNumber" type="String" visibility="private"/>
+        <Field name="tickets" type="Ticket[]" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Membership" package="cinema" visibility="public" xPosition="290.0" yPosition="865.0">
+      <Fields>
+        <Field name="discount" type="Double" visibility="private"/>
+        <Field name="validityTime" type="Date" visibility="private"/>
+        <Field name="benefits" type="String" visibility="private"/>
+        <Field name="type" type="TypeMembership" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Person" package="cinema" visibility="public" xPosition="512.0" yPosition="43.0">
+      <Fields>
+        <Field name="disability" type="boolean" visibility="private"/>
+        <Field name="birthDay" type="Date" visibility="private"/>
+        <Field name="email" type="String" visibility="private"/>
+        <Field name="id" type="String" visibility="private"/>
+        <Field name="name" type="String" visibility="private"/>
+        <Field name="phoneNumber" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Product" package="cinema" visibility="public" xPosition="22.0" yPosition="1215.0">
+      <Fields>
+        <Field name="price" type="double" visibility="private"/>
+        <Field name="stock" type="int" visibility="private"/>
+        <Field name="category" type="String" visibility="private"/>
+        <Field name="code" type="String" visibility="private"/>
+        <Field name="description" type="String" visibility="private"/>
+        <Field name="productName" type="String" visibility="private"/>
+        <Field name="Status" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Seller" package="cinema" visibility="public" xPosition="1255.0" yPosition="795.0">
+      <Fields>
+        <Field name="state" type="boolean" visibility="private"/>
+        <Field name="idSeller" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Technical" package="cinema" visibility="public" xPosition="1502.0" yPosition="663.0">
+      <Fields>
+        <Field name="idTechnical" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="Ticket" package="cinema" visibility="public" xPosition="22.0" yPosition="865.0">
+      <Fields>
+        <Field name="price" type="double" visibility="private"/>
+        <Field name="date" type="Date" visibility="private"/>
+        <Field name="sitNumber" type="String" visibility="private"/>
+        <Field name="movieTitle" type="String" visibility="private"/>
+        <Field name="paymentMethod" type="String" visibility="private"/>
+        <Field name="roomNumber" type="String" visibility="private"/>
+        <Field name="status" type="String" visibility="private"/>
+        <Field name="ticketId" type="String" visibility="private"/>
+        <Field name="type" type="String" visibility="private"/>
+        <Field name="showTime" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Class name="TicketStaff" package="cinema" visibility="public" xPosition="1008.0" yPosition="673.0">
+      <Fields>
+        <Field name="staffId" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods/>
+    </Class>
+    <Enum name="TypeMembership" package="cinema" visibility="public" xPosition="290.0" yPosition="586.0">
+      <Literals>
+        <Literal name="BASIC"/>
+        <Literal name="PRO"/>
+        <Literal name="PREMIUM"/>
+      </Literals>
+    </Enum>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="type" source="cinema.Membership" target="cinema.TypeMembership" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="has" source="cinema.Ticket" target="cinema.Product" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
+    <HasRelation name="has" source="cinema.Invoice" target="cinema.Ticket" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
+    <IsRelation name="is" source="cinema.Technical" target="cinema.Employee"/>
+    <IsRelation name="is" source="cinema.Seller" target="cinema.Employee"/>
+    <IsRelation name="is" source="cinema.Customer" target="cinema.Person"/>
+    <UseRelation source="cinema.Membership" target="cinema.TypeMembership" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="cinema.TicketStaff" target="cinema.Employee"/>
+    <HasRelation name="has" source="cinema.Customer" target="cinema.Invoice" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
+    <HasRelation name="has" source="cinema.Customer" target="cinema.TypeMembership" type="Aggregation" sourceCardinality="0..1" targetCardinality="0..1"/>
+    <IsRelation name="is" source="cinema.Administrator" target="cinema.Employee"/>
+    <IsRelation name="is" source="cinema.Employee" target="cinema.Person"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
