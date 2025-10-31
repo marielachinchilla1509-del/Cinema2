@@ -1,4 +1,4 @@
-package cinema;
+package proyecto1.cinema;
 
 import java.util.Date;
 
@@ -19,6 +19,11 @@ public class Membership {
         this.benefits = benefits;
         this.type = type;
     }
+
+    public Membership() {
+    }
+    
+    
 
     public Double getDiscount() {
         return discount;

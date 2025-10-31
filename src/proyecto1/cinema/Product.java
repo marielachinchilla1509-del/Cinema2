@@ -1,7 +1,6 @@
-package cinema;
-    
-    public class Product {
+package proyecto1.cinema;
 
+public class Product {
 
     private double price;
 
@@ -17,7 +16,7 @@ package cinema;
 
     private String Status;
 
-    public Product(double price, int stock, String category, String code, 
+    public Product(double price, int stock, String category, String code,
             String description, String productName, String Status) {
         this.price = price;
         this.stock = stock;
@@ -86,16 +85,10 @@ package cinema;
 
     @Override
     public String toString() {
-        return "Product{" + "price=" + price + ", stock=" + stock + 
-                ", category=" + category + ", code=" + code + ", description=" 
-                + description + ", productName=" + productName + ", Status=" +
-                Status + '}';
+        return "Product{" + "price=" + price + ", stock=" + stock
+                + ", category=" + category + ", code=" + code + ", description="
+                + description + ", productName=" + productName + ", Status="
+                + Status + '}';
     }
-    
-    
-    
+
 }
-    
-
-    
-

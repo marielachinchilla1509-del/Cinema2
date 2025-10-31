@@ -1,4 +1,4 @@
-package cinema;
+package proyecto1.cinema;
 
 import java.util.Date;
 
