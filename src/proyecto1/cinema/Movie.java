@@ -1,4 +1,6 @@
 package proyecto1.cinema;
+import java.io.FileWriter;   // Import the FileWriter class
+import java.io.IOException;  // Import the IOException class
 
 public class Movie {
 
@@ -101,5 +103,6 @@ public class Movie {
                 + type + '}';
     }
     
-    
+   
 }
+
