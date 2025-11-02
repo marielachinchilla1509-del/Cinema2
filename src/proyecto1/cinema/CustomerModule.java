@@ -202,7 +202,48 @@ class CustomerModule {
         }
     }
 
+/*
+    this method is used for load de customer information and show the list
+    this list we only load if the user saved the information in "customer.txt"
+    
+    Reads the file line by line and show the information exactly as it was saved
+    by savelist() method
+    
+    if the file does not exist, or not can be read, the system show a
+    error message
+    
+ */    
     private void loadcustomer() {
         
+        try{
+        // Create a File object representing the customers.txt file
+        java.io.File file = new java.io.File("customers.txt");
+        
+        // this is used for validate the file exists
+        if (!file.exists()) {
+            System.out.println("No saved customer file found.");
+            return;
+        
+        }
+            //Create a BufferedReader to read the text file line by line
+            java.io.BufferedReader reader = new java.io.BufferedReader
+            (new java.io.FileReader(file));
+            String line;
+            
+            System.out.println("\\n=== LOADED CUSTOMER LIST ===");
+
+            // Read and print each line until the end of the file
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            //Always close the file after reading to free system resources
+            reader.close();
+            System.out.println("\nFile loaded successfully!");
+            
+            
+    }catch (IOException e) {
+        // Show error message in case the file cannot be read
+        System.out.println("Error reading file: " + e.getMessage());
     }
+}
 }
