@@ -28,7 +28,11 @@ public class Proyecto1Cinema {
      */
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        CustomerModule customerModule = new CustomerModule();// Create customer module
+        CustomerModule customerModule = new CustomerModule();
+        /*
+        *Create customer module
+        
+        */
         int option;
         
          do {
@@ -36,7 +40,8 @@ public class Proyecto1Cinema {
             System.out.println("1) Customer module");
             System.out.println("2) Employee module");
             System.out.println("3) Product module");
-            System.out.println("0) Salir");
+            System.out.println("4) Ticket sales module");
+            System.out.println("0) Exit");
             option = Integer.parseInt(br.readLine());
             
             switch (option){

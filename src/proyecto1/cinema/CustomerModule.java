@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 /**
  *
  * @author Carolina
@@ -37,6 +39,7 @@ class CustomerModule {
             System.out.println("2) Customer List");
             System.out.println("3) Search Customer");
             System.out.println("4) Save List");
+            System.out.println("5) Load Customer List");
             System.out.println("0) Back to the main menu");
             option = sc.nextInt();
             sc.nextLine();
@@ -53,6 +56,9 @@ class CustomerModule {
                 break;
             case 4:
                 saveList();
+                break;
+            case 5:
+                loadcustomer();
                 break;
             case 0:
                     System.out.println("Returning to the main module menu...");
@@ -78,6 +84,9 @@ class CustomerModule {
        
        System.out.println("Enter the customers id ");
        String id = sc.nextLine();
+       
+        System.out.println("Enter the email");
+        String email = sc.nextLine();
        
        System.out.println("Does the customer have any disability? yes/ not");
        String answer = sc.nextLine();
@@ -142,16 +151,58 @@ class CustomerModule {
             System.out.println((i+1)+" Name:"+ customers[i].getName()+ 
                     " Disability:"+ customers[i].isDisability()+" ID:" +
                     customers[i].getId()+ " VIP:"+ customers[i].isVip());
-        
         }        
     }
-       
-    
+      
     private void searchCustomer() {
-        
+        if(contador==0){
+            System.out.println("There are not registered customers");
+            System.out.println("Please register");
+            return;
+        }
+            System.out.println("Enter the customers ID to search");
+            String id = sc.nextLine();
+            
+            boolean found= false;
+            for( int i=0; i<contador; i++){
+                if(customers[i].getId().equals(id)){
+                    System.out.println("=== Customer found ===");
+                    System.out.println("Name: "+ customers[i].getName());
+                    System.out.println("Phone: " + customers[i].getPhoneNumber());
+                    System.out.println("Email: " + customers[i].getEmail());
+                    System.out.println("Vip: " + customers[i].isVip());
+                    found=true;
+                }
+                if(!found){
+                    System.out.println("Customer not found");
+                }
+            }
     }
 
     private void saveList() {
+        if (contador == 0) {
+            System.out.println("There are not customers to save");
+            return;
+        }
+        try {
+            FileWriter fileWriter = new FileWriter("customers.txt");
+            PrintWriter printWriter = new PrintWriter(fileWriter); 
+            printWriter.println("Customer List");
+            for (int i=0; i< contador; i++) {
+                Customer c = customers[i];
+                printWriter.println((i + 1) + "Name: " + c.getName() + " ID: "
+                        + c.getId() + " Disability: " + c.isDisability() + " VIP: "
+                        + c.isVip() + " Phone: " + c.getPhoneNumber());
+            }
+            printWriter.close();
+            System.out.println("The customer list was saved correctly in customer.txt");
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the list "
+                    + e.getMessage());
+        }
+    }
+
+    private void loadcustomer() {
         
     }
 }
