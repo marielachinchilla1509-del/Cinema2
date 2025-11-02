@@ -1,3 +1,2 @@
 Customer List
-1Name: Kendall Montero Cortes ID: 604970282 Disability: false VIP: true Phone: 88670325
-2Name: Hola ID: 48484 Disability: true VIP: true Phone: 828338
+1Name: Mariela Chinchilla  ID: 605010584 Disability: false VIP: false Phone: 89682193

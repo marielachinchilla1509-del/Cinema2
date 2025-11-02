@@ -48,6 +48,19 @@ public class Proyecto1Cinema {
                 case 1:
                     customerModule.showMenu();
                     break;
+                case 2:
+                    employeeModule.showMenu();
+                    break;
+                case 3:
+                    productModule.showMenu();
+                    break;
+                case 4:
+                    ticketSalesModule.showMenu();
+                    break;
+                case 0:
+                    System.out.println("Exiting the system...");
+                    break;
+                default:
             }
     
          }while(option != 0);
