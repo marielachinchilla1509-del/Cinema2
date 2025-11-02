@@ -14,10 +14,11 @@ public class Customer extends Person {
             boolean disability, Date birthDay, String email, String id, 
             String name, String phoneNumber) {
         super(disability, birthDay, email, id, name, phoneNumber);
-        this.vip = vip;
+        this.vip = false;
         this.customerId = customerId;
         this.invoices = invoices;
     }
+    
 
     public Customer() {
         boolean vip= false;
