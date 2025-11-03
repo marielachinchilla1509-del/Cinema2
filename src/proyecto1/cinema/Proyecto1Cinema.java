@@ -29,6 +29,8 @@ public class Proyecto1Cinema {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         CustomerModule customerModule = new CustomerModule();
+        employeeModule em = new employeeModule(); 
+
         /*
         *Create customer module
         
@@ -49,7 +51,7 @@ public class Proyecto1Cinema {
                     customerModule.showMenu();
                     break;
                 case 2:
-                    employeeModule.showMenu();
+                    em.showMenu();
                     break;
                 case 3:
                     productModule.showMenu();
