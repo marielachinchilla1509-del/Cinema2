@@ -2,7 +2,7 @@
 
 <ClassDiagram name="JavaApplication1">
   <ClassDiagramComponents>
-    <Class name="Administrator" package="cinema" visibility="public" xPosition="748.0" yPosition="578.0">
+    <Class name="Administrator" package="cinema" visibility="public" xPosition="773.0" yPosition="586.0">
       <Fields>
         <Field name="bonus" type="double" visibility="private"/>
         <Field name="calculateTotalSales" type="double" visibility="private"/>
@@ -141,19 +141,19 @@
     </Enum>
   </ClassDiagramComponents>
   <ClassDiagramRelations>
-    <HasRelation name="has" source="cinema.Customer" target="cinema.Invoice" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
-    <HasRelation name="has" source="cinema.Ticket" target="cinema.Product" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
     <HasRelation name="has" source="cinema.Customer" target="cinema.TypeMembership" type="Aggregation" sourceCardinality="0..1" targetCardinality="0..1"/>
+    <IsRelation name="is" source="cinema.Seller" target="cinema.Employee"/>
     <IsRelation name="is" source="cinema.Technical" target="cinema.Employee"/>
-    <HasRelation name="type" source="cinema.Membership" target="cinema.TypeMembership" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
-    <UseRelation name="necesita de un" source="cinema.Invoice" target="cinema.Customer" sourceCardinality="1..1" targetCardinality="1..1"/>
-    <IsRelation name="is" source="cinema.Administrator" target="cinema.Employee"/>
-    <HasRelation name="tiene" source="cinema.Ticket" target="Movie" type="Composition" sourceCardinality="0..1" targetCardinality="1..1"/>
     <HasRelation name="has" source="cinema.Invoice" target="cinema.Ticket" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
+    <HasRelation name="has" source="cinema.Customer" target="cinema.Invoice" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
     <UseRelation source="cinema.Membership" target="cinema.TypeMembership" sourceCardinality="1..1" targetCardinality="1..1"/>
     <IsRelation name="is" source="cinema.Customer" target="cinema.Person"/>
-    <IsRelation name="is" source="cinema.Employee" target="cinema.Person"/>
     <IsRelation name="is" source="cinema.TicketStaff" target="cinema.Employee"/>
-    <IsRelation name="is" source="cinema.Seller" target="cinema.Employee"/>
+    <IsRelation name="is" source="cinema.Administrator" target="cinema.Employee"/>
+    <HasRelation name="has" source="cinema.Ticket" target="cinema.Product" type="Aggregation" sourceCardinality="0..1" targetCardinality="1..*" collectionType="List"/>
+    <HasRelation name="type" source="cinema.Membership" target="cinema.TypeMembership" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation name="necesita de un" source="cinema.Invoice" target="cinema.Customer" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="tiene" source="cinema.Ticket" target="Movie" type="Composition" sourceCardinality="0..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="cinema.Employee" target="cinema.Person"/>
   </ClassDiagramRelations>
 </ClassDiagram>
