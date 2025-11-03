@@ -1,2 +1,0 @@
-Customer List
-1Name: Mariela Chinchilla  ID: 605010584 Disability: false VIP: false Phone: 89682193
