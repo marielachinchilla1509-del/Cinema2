@@ -268,7 +268,7 @@ public class ProductModule {
                         + " | Status: " + p.getStatus());
             }
 
-            printWriter.close(); // close file
+            printWriter.close(); // cierra el archivo
             System.out.println("The product list was saved correctly in 'products.txt'");
 
         } catch (IOException e) {
@@ -302,7 +302,7 @@ public class ProductModule {
             }
 
             if (found) {
-                // Reescribimos el archivo sin el producto eliminado+
+                // Reescribimos el archivo sin el producto eliminado
                 SaveProductList();
                 System.out.println("Product with code '" + codeToDelete + "' was deleted successfully.");
             } else {

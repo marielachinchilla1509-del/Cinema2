@@ -1,4 +1,3 @@
-
 package proyecto1.cinema;
 
 import java.io.BufferedReader;
@@ -31,9 +30,6 @@ public class Proyecto1Cinema {
         CustomerModule customerModule = new CustomerModule();
         EmployeeModule em = new EmployeeModule(); 
         ProductModule pm = new ProductModule();
-        TicketSalesModule tsm= new TicketSalesModule();
-        Product p = new Product();
-
         /*
         *Create customer module
         
@@ -57,7 +53,7 @@ public class Proyecto1Cinema {
                     em.showMenu();
                     break;
                 case 3:
-                    pm.showMenu();
+                   pm.showMenu();
                     break;
                 case 4:
                     tsm.showmenu();
@@ -69,7 +65,7 @@ public class Proyecto1Cinema {
             }
     
          }while(option != 0);
+                 
          
     }
 }
-
