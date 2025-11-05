@@ -56,7 +56,7 @@ public class Proyecto1Cinema {
                    pm.showMenu();
                     break;
                 case 4:
-                    ticketSalesModule.showMenu();
+                    tsm.showmenu();
                     break;
                 case 0:
                     System.out.println("Exiting the system...");

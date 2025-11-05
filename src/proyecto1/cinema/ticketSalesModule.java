@@ -11,10 +11,16 @@ package proyecto1.cinema;
  * @author Astrid
  * @author Buso
  */
-class ticketSalesModule {
+class TicketSalesModule {
+     TicketSalesModule tsm= new TicketSalesModule();
 
     public static void showMenu() {
         
+        
+    }
+
+    void showmenu() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }
