@@ -1,4 +1,3 @@
-
 package proyecto1.cinema;
 
 import java.io.BufferedReader;
@@ -66,7 +65,7 @@ public class Proyecto1Cinema {
             }
     
          }while(option != 0);
+                 
          
     }
 }
-

@@ -33,7 +33,6 @@ public class Product {
         this.status = status;
     }
 
-    // 🔹 Getters y setters
     public double getPrice() {
         return price;
     }

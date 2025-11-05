@@ -116,16 +116,18 @@ public class ProductModule {
             System.out.println("Enter product status (Available / Out of stock):");
             String status = br.readLine();
 
-            Product p = new Product();
-            p.setProductName(productName);
-            p.setCategory(category);
-            p.setDescription(description);
-            p.setCode(code);
-            p.setStock(stock);
-            p.setPrice(price);
-            p.setStatus(status);
 
-            product[contador] = p;
+            Product pm = new Product();
+            pm.setProductName(productName);
+            pm.setCategory(category);
+            pm.setDescription(description);
+            pm.setCode(code);
+            pm.setStock(stock);
+            pm.setPrice(price);
+            pm.setStatus(status);
+
+            product[contador] = pm;
+
             contador++;
 
             System.out.println("Product registered successfully!");
