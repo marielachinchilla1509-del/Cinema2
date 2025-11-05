@@ -3,30 +3,37 @@ package proyecto1.cinema;
 public class Product {
 
     private double price;
-
     private int stock;
-
     private String category;
-
     private String code;
-
     private String description;
-
     private String productName;
+    private String status;
 
-    private String Status;
+    // 🔹 Constructor vacío (ahora sí funcional)
+    public Product() {
+        this.price = 0.0;
+        this.stock = 0;
+        this.category = "";
+        this.code = "";
+        this.description = "";
+        this.productName = "";
+        this.status = "";
+    }
 
+    // 🔹 Constructor con parámetros
     public Product(double price, int stock, String category, String code,
-            String description, String productName, String Status) {
+                   String description, String productName, String status) {
         this.price = price;
         this.stock = stock;
         this.category = category;
         this.code = code;
         this.description = description;
         this.productName = productName;
-        this.Status = Status;
+        this.status = status;
     }
 
+    // 🔹 Getters y setters
     public double getPrice() {
         return price;
     }
@@ -76,19 +83,23 @@ public class Product {
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
-    public void setStatus(String Status) {
-        this.Status = Status;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
-        return "Product{" + "price=" + price + ", stock=" + stock
-                + ", category=" + category + ", code=" + code + ", description="
-                + description + ", productName=" + productName + ", Status="
-                + Status + '}';
+        return "Product{" +
+                "price=" + price +
+                ", stock=" + stock +
+                ", category='" + category + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", productName='" + productName + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
-
 }
