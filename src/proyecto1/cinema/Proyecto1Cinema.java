@@ -30,6 +30,9 @@ public class Proyecto1Cinema {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         CustomerModule customerModule = new CustomerModule();
         EmployeeModule em = new EmployeeModule(); 
+        ProductModule pm = new ProductModule();
+        TicketSalesModule tsm= new TicketSalesModule();
+        Product p = new Product();
 
         /*
         *Create customer module
@@ -54,10 +57,10 @@ public class Proyecto1Cinema {
                     em.showMenu();
                     break;
                 case 3:
-                    productModule.showMenu();
+                    pm.showMenu();
                     break;
                 case 4:
-                    ticketSalesModule.showMenu();
+                    tsm.showmenu();
                     break;
                 case 0:
                     System.out.println("Exiting the system...");
