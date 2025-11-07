@@ -52,6 +52,10 @@ public class Ticket {
         String showTime= "Not registered";
     }
 
+    Ticket(String customer, String string, int qty, double price, double total) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public double getPrice() {
         return price;
     }

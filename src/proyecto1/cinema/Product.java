@@ -33,10 +33,7 @@ public class Product {
         this.status = status;
     }
 
-    Product() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+   
     public double getPrice() {
         return price;
     }

@@ -14,7 +14,7 @@ import java.util.Date;
  * @author Carolina
  * @author kendall
  */
-class EmployeeModule {
+public class EmployeeModule {
          private final Employee[]employee = new Employee[100];// Static array for storing employees
      private int contador =0;
      Scanner sc=new Scanner(System.in);

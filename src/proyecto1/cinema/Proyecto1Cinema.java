@@ -30,6 +30,7 @@ public class Proyecto1Cinema {
         CustomerModule customerModule = new CustomerModule();
         EmployeeModule em = new EmployeeModule(); 
         ProductModule pm = new ProductModule();
+        TicketSalesModule tsm= new TicketSalesModule();
         /*
         *Create customer module
         
@@ -56,7 +57,7 @@ public class Proyecto1Cinema {
                    pm.showMenu();
                     break;
                 case 4:
-                    tsm.showmenu();
+                    tsm.showMenu();
                     break;
                 case 0:
                     System.out.println("Exiting the system...");

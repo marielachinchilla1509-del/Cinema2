@@ -20,7 +20,7 @@ import java.io.PrintWriter;
  */
 
 
-class CustomerModule {
+public class CustomerModule {
     
     private final Customer[]customers = new Customer[100];
     private int contador =0;
