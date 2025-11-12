@@ -215,6 +215,18 @@ public class CustomerModule {
     error message
     
  */    
+    
+        // 🔹 Método para buscar y devolver un cliente por su ID
+    public Customer getCustomerById(String id) {
+        for (int i = 0; i < contador; i++) {
+            if (customers[i] != null && customers[i].getId().equals(id)) {
+                return customers[i];
+            }
+        }
+        return null; // si no se encontró
+    }
+
+    
     private void loadcustomer() {
         
         try{

@@ -237,4 +237,13 @@ public class TicketSalesModule {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
+    public void addTicket(Ticket t) {
+    if (counter < tickets.length) {
+        tickets[counter++] = t;
+        System.out.println("Ticket added successfully: " + t.getMovieTitle());
+    } else {
+        System.out.println("No more space for tickets!");
+    }
+}
+
 }

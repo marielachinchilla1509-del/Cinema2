@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
+import javax.swing.SwingUtilities;
 
 /**
  * @author Mariela
@@ -20,6 +21,7 @@ import java.util.Scanner;
  * 
  */
 public class Proyecto1Cinema {
+
 
     /**
      * Scanner for reading input from the console.
@@ -69,4 +71,6 @@ public class Proyecto1Cinema {
                  
          
     }
+
+   
 }

@@ -2,31 +2,31 @@ package proyecto1.cinema;
 
 import java.util.Date;
 
+/**
+ * Represents a movie ticket in the cinema system.
+ * Stores all relevant information for ticket sales.
+ * 
+ * @author Kendall
+ * @author Carolina
+ */
 public class Ticket {
 
     private double price;
-
     private Date date;
-
     private String sitNumber;
-
     private String movieTitle;
-
     private String paymentMethod;
-
     private String roomNumber;
-
     private String status;
-
     private String ticketId;
-
     private String type;
-
     private String showTime;
 
+    // ===== Constructor with all parameters =====
     public Ticket(double price, Date date, String sitNumber, String movieTitle,
-            String paymentMethod, String roomNumber, String status,
-            String ticketId, String type, String showTime) {
+                  String paymentMethod, String roomNumber, String status,
+                  String ticketId, String type, String showTime) {
+
         this.price = price;
         this.date = date;
         this.sitNumber = sitNumber;
@@ -39,23 +39,21 @@ public class Ticket {
         this.showTime = showTime;
     }
 
+    // ===== Default constructor =====
     public Ticket() {
-        double price = 0;
-        Date date = null;
-        String sitNumber = "Not registered";
-        String movieTitle= "Not registered";
-        String paymentMethod= "Not registered";
-        String roomNumber= "Not registered";
-        String status= " Not registered";
-        String ticketId= "Not registered";
-        String type= "Not registered";
-        String showTime= "Not registered";
+        this.price = 0.0;
+        this.date = new Date(); // sets current date
+        this.sitNumber = "";
+        this.movieTitle = "";
+        this.paymentMethod = "";
+        this.roomNumber = "";
+        this.status = "";
+        this.ticketId = "";
+        this.type = "";
+        this.showTime = "";
     }
 
-    Ticket(String customer, String string, int qty, double price, double total) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+    // ===== Getters and Setters =====
     public double getPrice() {
         return price;
     }
@@ -136,16 +134,15 @@ public class Ticket {
         this.showTime = showTime;
     }
 
-    @Override
-    public String toString() {
-        return "Ticket{" + "price=" + price + ", date=" + date + ", sitNumber="
-                + sitNumber + ", movieTitle=" + movieTitle + ", paymentMethod="
-                + paymentMethod + ", roomNumber=" + roomNumber + ", status=" + 
-                status + ", ticketId=" + ticketId + ", type=" + type + 
-                ", showTime=" + showTime + '}';
+    // ===== Display Ticket Info (Optional for debugging) =====
+    public void printTicketInfo() {
+        System.out.println("Movie: " + movieTitle);
+        System.out.println("Room: " + roomNumber);
+        System.out.println("Seat: " + sitNumber);
+        System.out.println("Type: " + type);
+        System.out.println("Payment: " + paymentMethod);
+        System.out.println("Price: $" + price);
+        System.out.println("Date: " + date);
+        System.out.println("Status: " + status);
     }
-
-    
-    
-    
 }
