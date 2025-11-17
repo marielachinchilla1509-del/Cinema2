@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -127,7 +130,7 @@ public class SellTicketUI extends JFrame {
 
                 module.addTicket(t);
 
-                // ✅ Show Invoice Window
+                // ✅ Show Invoice Window and save to file
                 showInvoice(t);
 
                 dispose();
@@ -162,6 +165,7 @@ public class SellTicketUI extends JFrame {
         panel.add(header, BorderLayout.NORTH);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat fileSdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("Consolas", Font.PLAIN, 16));
@@ -171,7 +175,7 @@ public class SellTicketUI extends JFrame {
         double tax = t.getPrice() * 0.13;
         double total = t.getPrice() + tax;
 
-        textArea.setText(
+        String invoiceContent = 
                 "----------------------------------------\n" +
                 "         🎟  CINEMA INVOICE\n" +
                 "----------------------------------------\n" +
@@ -187,28 +191,73 @@ public class SellTicketUI extends JFrame {
                 "----------------------------------------\n" +
                 String.format("TOTAL: $%.2f\n", total) +
                 "----------------------------------------\n" +
-                "Thank you for your purchase! 🍿"
-        );
+                "Thank you for your purchase! 🍿";
+
+        textArea.setText(invoiceContent);
 
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setBorder(null);
         panel.add(scrollPane, BorderLayout.CENTER);
 
+        // ===== SAVE INVOICE BUTTON =====
+        JButton btnSaveInvoice = new JButton("💾 Save Invoice to File");
+        btnSaveInvoice.setBackground(new Color(0x228B22));
+        btnSaveInvoice.setForeground(Color.WHITE);
+        btnSaveInvoice.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnSaveInvoice.setFocusPainted(false);
+        btnSaveInvoice.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnSaveInvoice.addActionListener(e -> saveInvoiceToFile(t, invoiceContent));
+
         JButton btnClose = new JButton("Close");
         btnClose.setBackground(new Color(0xB22222));
         btnClose.setForeground(Color.WHITE);
-        btnClose.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnClose.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnClose.setFocusPainted(false);
         btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnClose.addActionListener(e -> invoiceFrame.dispose());
 
-        JPanel bottom = new JPanel();
+        JPanel bottom = new JPanel(new FlowLayout());
         bottom.setBackground(Color.WHITE);
+        bottom.add(btnSaveInvoice);
         bottom.add(btnClose);
         panel.add(bottom, BorderLayout.SOUTH);
 
         invoiceFrame.add(panel);
         invoiceFrame.setVisible(true);
+        
+        // Auto-save invoice when window opens
+        saveInvoiceToFile(t, invoiceContent);
+    }
+
+    // ===== SAVE INVOICE TO TXT FILE =====
+    private void saveInvoiceToFile(Ticket t, String invoiceContent) {
+        try {
+            SimpleDateFormat fileSdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String fileName = "invoice_" + fileSdf.format(t.getDate()) + ".txt";
+            
+            FileWriter fileWriter = new FileWriter(fileName);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            
+            // Write invoice content to file
+            printWriter.println(invoiceContent);
+            printWriter.println("\n=== SYSTEM GENERATED INVOICE ===");
+            printWriter.println("Generated on: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+            printWriter.println("File: " + fileName);
+            
+            printWriter.close();
+            
+            JOptionPane.showMessageDialog(this,
+                "✅ Invoice saved successfully!\n" +
+                "File: " + fileName,
+                "Invoice Saved",
+                JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                "❌ Error saving invoice: " + e.getMessage(),
+                "Save Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // ===== MAIN FOR TESTING =====

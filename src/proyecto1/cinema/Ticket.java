@@ -21,11 +21,12 @@ public class Ticket {
     private String ticketId;
     private String type;
     private String showTime;
+    private String customerId;   // NEW: reference to the customer
 
     // ===== Constructor with all parameters =====
     public Ticket(double price, Date date, String sitNumber, String movieTitle,
                   String paymentMethod, String roomNumber, String status,
-                  String ticketId, String type, String showTime) {
+                  String ticketId, String type, String showTime, String customerId) {
 
         this.price = price;
         this.date = date;
@@ -37,6 +38,7 @@ public class Ticket {
         this.ticketId = ticketId;
         this.type = type;
         this.showTime = showTime;
+        this.customerId = customerId;
     }
 
     // ===== Default constructor =====
@@ -51,6 +53,7 @@ public class Ticket {
         this.ticketId = "";
         this.type = "";
         this.showTime = "";
+        this.customerId = "";
     }
 
     // ===== Getters and Setters =====
@@ -134,6 +137,14 @@ public class Ticket {
         this.showTime = showTime;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
     // ===== Display Ticket Info (Optional for debugging) =====
     public void printTicketInfo() {
         System.out.println("Movie: " + movieTitle);
@@ -144,5 +155,19 @@ public class Ticket {
         System.out.println("Price: $" + price);
         System.out.println("Date: " + date);
         System.out.println("Status: " + status);
+        System.out.println("Customer ID: " + customerId);
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketId='" + ticketId + '\'' +
+                ", movie='" + movieTitle + '\'' +
+                ", seat='" + sitNumber + '\'' +
+                ", room='" + roomNumber + '\'' +
+                ", type='" + type + '\'' +
+                ", price=" + price +
+                ", customerId='" + customerId + '\'' +
+                '}';
     }
 }

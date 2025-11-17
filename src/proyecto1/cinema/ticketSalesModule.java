@@ -14,6 +14,9 @@ public class TicketSalesModule {
 
     private final Ticket[] tickets = new Ticket[100]; // static array for storing tickets
     private int counter = 0;
+    private final Invoice[] invoices = new Invoice[50];
+    private int invoiceCounter = 0;
+    
     Scanner sc = new Scanner(System.in);
 
     public void showMenu() {
@@ -26,6 +29,8 @@ public class TicketSalesModule {
             System.out.println("3) Ticket list");
             System.out.println("4) Save ticket list");
             System.out.println("5) Load ticket list");
+            System.out.println("6) Create invoice");
+            System.out.println("7) Invoice list");
             System.out.println("0) Back to main menu");
             option = sc.nextInt();
             sc.nextLine();
@@ -45,6 +50,12 @@ public class TicketSalesModule {
                     break;
                 case 5:
                     loadTickets();
+                    break;
+                case 6:
+                    createInvoice();
+                    break;
+                case 7:
+                    invoiceList();
                     break;
                 case 0:
                     System.out.println("Returning to main menu...");
@@ -184,6 +195,17 @@ public class TicketSalesModule {
                     + " | Date: " + t.getDate());
         }
     }
+    
+   public Ticket findById(String id) {
+    for (int i = 0; i < counter; i++) {
+        if (tickets[i] != null && tickets[i].getTicketId().equals(id)) {
+            return tickets[i];
+        }
+    }
+    return null; // we dont found de customer
+}
+
+
 
     /**
      * Saves all ticket data to a .txt file.
@@ -237,13 +259,100 @@ public class TicketSalesModule {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
+    
     public void addTicket(Ticket t) {
-    if (counter < tickets.length) {
-        tickets[counter++] = t;
-        System.out.println("Ticket added successfully: " + t.getMovieTitle());
-    } else {
-        System.out.println("No more space for tickets!");
+        if (counter < tickets.length) {
+            tickets[counter++] = t;
+            System.out.println("Ticket added successfully: " + t.getMovieTitle());
+        } else {
+            System.out.println("No more space for tickets!");
+        }
     }
-}
 
+    private void createInvoice() {
+        if (invoiceCounter >= invoices.length) {
+            System.out.println("No more space for invoices.");
+            return;
+        }
+
+        if (counter == 0) {
+            System.out.println("No tickets available to generate an invoice.");
+            return;
+        }
+
+        System.out.println("Enter customer ID:");
+        String id = sc.nextLine();
+
+        CustomerModule cm = new CustomerModule();
+        Customer customer = cm.getCustomerById(id);
+
+        if (customer == null) {
+            System.out.println("Customer not found.");
+            return;
+        }
+
+        System.out.println("Enter invoice number:");
+        String invoiceNumber = sc.nextLine();
+
+        System.out.println("Enter payment method (Card/Cash):");
+        String paymentMethod = sc.nextLine();
+
+        System.out.println("Membership discount available? (true/false):");
+        boolean membership = sc.nextBoolean();
+        sc.nextLine();
+
+        Invoice inv = new Invoice(
+                membership,
+                new Date(),
+                paymentMethod,
+                invoiceNumber,
+                tickets
+        );
+
+        invoices[invoiceCounter] = inv;
+        invoiceCounter++;
+
+        // ADD INVOICE TO CUSTOMER ARRAY
+        customer.addInvoice(inv);
+
+        // PRINT INVOICE
+        System.out.println("\n=== INVOICE CREATED ===");
+        inv.printInvoice();
+
+        // ===== SAVE INVOICES TO FILE =====
+        try {
+            FileWriter fw = new FileWriter("invoices.txt");
+            PrintWriter pw = new PrintWriter(fw);
+
+            pw.println("=== INVOICE RECORDS ===");
+            for (int i = 0; i < invoiceCounter; i++) {
+                Invoice invoice = invoices[i];
+                pw.println((i + 1) + ") Invoice#: " + invoice.getInvoiceNumber()
+                        + " | Date: " + invoice.getDate()
+                        + " | Payment: " + invoice.getPaymentMethod()
+                        + " | Membership: " + invoice.isMembership());
+            }
+
+            pw.close();
+            System.out.println("Invoices saved successfully in invoices.txt!");
+        } catch (IOException e) {
+            System.out.println("Error saving invoices: " + e.getMessage());
+        }
+    }
+
+    private void invoiceList() {
+        if (invoiceCounter == 0) {
+            System.out.println("No invoices registered.");
+            return;
+        }
+
+        System.out.println("\n=== INVOICE LIST ===");
+        for (int i = 0; i < invoiceCounter; i++) {
+            Invoice inv = invoices[i];
+            System.out.println((i + 1) + ") Invoice#: " + inv.getInvoiceNumber()
+                    + " | Date: " + inv.getDate()
+                    + " | Payment: " + inv.getPaymentMethod()
+                    + " | Membership: " + inv.isMembership());
+        }
+    }
 }

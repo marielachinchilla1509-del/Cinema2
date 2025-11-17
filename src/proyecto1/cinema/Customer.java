@@ -49,6 +49,17 @@ public class Customer extends Person {
     public void setInvoices(Invoice[] invoices) {
         this.invoices = invoices;
     }
+    
+    public void addInvoice(Invoice invoice) {
+    for (int i = 0; i < invoices.length; i++) {
+        if (invoices[i] == null) {
+            invoices[i] = invoice;
+            System.out.println("Invoice added to customer successfully!");
+            return;
+        }
+    }
+    System.out.println("No space for more invoices for this customer.");
+}
 
     @Override
     public String toString() {
