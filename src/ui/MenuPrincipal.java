@@ -44,7 +44,7 @@ public class MenuPrincipal extends JFrame {
         JButton btnEmployees = createMainButton("Employee Management", navyBlue, white);
         JButton btnProducts = createMainButton("Product Management", darkGreen, white);
         JButton btnCustomers = createMainButton("Customer Management", softPink, darkGray);
-        JButton btnTickets = createMainButton("Ticket Sales", darkGray, white);
+        JButton btnTickets = createMainButton("Sales", darkGray, white);
 
         mainPanel.add(btnEmployees);
         mainPanel.add(btnProducts);

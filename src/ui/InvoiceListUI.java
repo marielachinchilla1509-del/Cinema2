@@ -1,0 +1,199 @@
+package ui;
+
+import javax.swing.*;
+import javax.swing.table.*;
+import java.awt.*;
+import java.io.File;
+
+public class InvoiceListUI extends JFrame {
+
+    private JTable table;
+    private DefaultTableModel model;
+    private JLabel counterLabel;
+    private JTextField searchField;
+
+    // 📌 Folder where ticket invoices (.txt) are stored
+    private final String INVOICE_PATH =
+        "C:\\Users\\hp\\OneDrive\\Datos adjuntos\\Documentos\\NetBeansProjects\\CopiaProyecto\\Cinema2";
+
+    public InvoiceListUI() {
+        setTitle("Ticket Invoice List");
+        setSize(700, 450);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // ---------- TOP PANEL ----------
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(new Color(245, 245, 245));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        counterLabel = new JLabel("Invoices: 0");
+        counterLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        topPanel.add(counterLabel, BorderLayout.WEST);
+
+        // 🔍 Search field
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        searchPanel.setOpaque(false);
+
+        searchField = new JTextField(20);
+        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 180), 1, true),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+
+        JButton searchButton = new JButton("Search");
+        styleButton(searchButton);
+
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+
+        topPanel.add(searchPanel, BorderLayout.EAST);
+
+        add(topPanel, BorderLayout.NORTH);
+
+        // ---------- TABLE ----------
+        model = new DefaultTableModel(new Object[]{"File Name", "Size (KB)"}, 0);
+        table = new JTable(model);
+
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.setRowHeight(26);
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
+        table.getTableHeader().setBackground(new Color(230, 230, 230));
+        table.setSelectionBackground(new Color(200, 220, 255));
+
+        // 🔄 Column sorting
+        table.setAutoCreateRowSorter(true);
+
+        add(new JScrollPane(table), BorderLayout.CENTER);
+
+        // ---------- BOTTOM PANEL ----------
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBackground(new Color(245, 245, 245));
+
+        JButton refreshButton = new JButton("Refresh");
+        styleButton(refreshButton);
+
+        JButton openButton = new JButton("Open Invoice");
+        styleButton(openButton);
+
+        bottomPanel.add(refreshButton);
+        bottomPanel.add(openButton);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        // ---------- EVENT LISTENERS ----------
+        refreshButton.addActionListener(e -> loadInvoices());
+        openButton.addActionListener(e -> openSelectedInvoice());
+        searchButton.addActionListener(e -> filterInvoices());
+
+        // Load at startup
+        loadInvoices();
+    }
+
+    // -------------------------------------------
+    // STYLE FOR ALL BUTTONS
+    // -------------------------------------------
+    private void styleButton(JButton btn) {
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setBackground(new Color(60, 120, 210));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    // -------------------------------------------
+    // LOAD ONLY TICKET INVOICES (.txt) FROM FOLDER
+    // -------------------------------------------
+    private void loadInvoices() {
+        model.setRowCount(0);
+
+        File folder = new File(INVOICE_PATH);
+        if (!folder.exists() || !folder.isDirectory()) {
+            JOptionPane.showMessageDialog(this,
+                    "Invalid path:\n" + INVOICE_PATH,
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // ✅ Filter: only ticket invoices, exclude product invoices
+        File[] files = folder.listFiles((dir, name) ->
+                name.endsWith(".txt") && !name.contains("invoice_product")
+        );
+
+        if (files == null || files.length == 0) {
+            counterLabel.setText("Invoices: 0");
+            return;
+        }
+
+        for (File f : files) {
+            long sizeKB = f.length() / 1024;
+            model.addRow(new Object[]{f.getName(), sizeKB + " KB"});
+        }
+
+        counterLabel.setText("Invoices: " + files.length);
+    }
+
+    // -------------------------------------------
+    // SEARCH INVOICE BY NAME
+    // -------------------------------------------
+    private void filterInvoices() {
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
+        table.setRowSorter(sorter);
+
+        String text = searchField.getText().trim();
+
+        if (text.isEmpty()) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+        }
+    }
+
+    // -------------------------------------------
+    // OPEN SELECTED .TXT INVOICE
+    // -------------------------------------------
+    private void openSelectedInvoice() {
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Select an invoice first.",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Adjust for sorter
+        row = table.convertRowIndexToModel(row);
+
+        String fileName = (String) model.getValueAt(row, 0);
+        File file = new File(INVOICE_PATH + "\\" + fileName);
+
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(this,
+                    "File does not exist.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Desktop.getDesktop().open(file);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Could not open invoice.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // -------------------------------------------
+    // MAIN FOR TESTING
+    // -------------------------------------------
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new InvoiceListUI().setVisible(true));
+    }
+}

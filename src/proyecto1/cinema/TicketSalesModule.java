@@ -246,4 +246,16 @@ public class TicketSalesModule {
     }
 }
 
+    public void saveInvoiceToTxt(String factura) {
+    try {
+        FileWriter fw = new FileWriter("factura.txt", true); // true = append
+        fw.write(factura);
+        fw.write("\n-------------------------------------\n\n");
+        fw.close();
+        System.out.println("Factura guardada como factura.txt");
+    } catch (IOException e) {
+        System.out.println("❌ Error al guardar la factura.");
+    }
+}
+
 }
