@@ -1,0 +1,20 @@
+----------------------------------------
+         🎟  CINEMA INVOICE
+----------------------------------------
+Movie: HARRY POTTER
+Room: 2
+Seat: 5
+Type: Senior
+Payment: Card
+Date: 18/11/2025 16:20
+----------------------------------------
+PRICE: $6,00
+TAX (13%): $0,78
+----------------------------------------
+TOTAL: $6,78
+----------------------------------------
+Thank you for your purchase! 🍿
+
+=== SYSTEM GENERATED INVOICE ===
+Generated on: 18/11/2025 16:20:21
+File: invoice_20251118_162012.txt
