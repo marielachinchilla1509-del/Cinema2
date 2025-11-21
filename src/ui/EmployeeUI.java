@@ -40,20 +40,21 @@ public class EmployeeUI extends JFrame {
         buttonPanel.setBackground(white);
 
         JButton btnRegister = createBigButton("➕ Register Employee", red, white);
-        JButton btnList = createBigButton("📄 Employee List", navyBlue, white);
         JButton btnSearch = createBigButton("🔍 Search Employee", darkGray, white);
+        JButton btnList = createBigButton("📄 Employee List", navyBlue, white);
         JButton btnSave = createBigButton("💾 Save to TXT", black, white);
         JButton btnLoad = createBigButton("📁 Load TXT", darkGray, white);
+        JButton btnDelete = createBigButton("🗑 Delete Employee", red, white);
 
         buttonPanel.add(btnRegister);
-        buttonPanel.add(btnList);
         buttonPanel.add(btnSearch);
+        buttonPanel.add(btnList);
         buttonPanel.add(btnSave);
         buttonPanel.add(btnLoad);
+        buttonPanel.add(btnDelete);
 
         add(buttonPanel, BorderLayout.CENTER);
 
-        // ==== BACK BUTTON ====
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         backPanel.setBackground(white);
 
@@ -67,13 +68,13 @@ public class EmployeeUI extends JFrame {
 
         add(backPanel, BorderLayout.SOUTH);
 
-        // ==== EVENTS ====
+        // EVENTS
         btnRegister.addActionListener(e -> openRegisterWindow());
         btnList.addActionListener(e -> listEmployees());
         btnSearch.addActionListener(e -> openSearchWindow());
         btnSave.addActionListener(e -> saveToTxt());
         btnLoad.addActionListener(e -> loadFromTxt());
-
+        btnDelete.addActionListener(e -> deleteEmployee());
     }
 
     private JButton createBigButton(String text, Color bg, Color fg) {
@@ -87,12 +88,10 @@ public class EmployeeUI extends JFrame {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setOpaque(true);
         button.setBorderPainted(false);
-
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseEntered(java.awt.event.MouseEvent e) { button.setBackground(bg.darker()); }
             @Override public void mouseExited(java.awt.event.MouseEvent e) { button.setBackground(bg); }
         });
-
         return button;
     }
 
@@ -182,6 +181,10 @@ public class EmployeeUI extends JFrame {
         area.setFont(new Font("Inter", Font.PLAIN, 16));
         area.setEditable(false);
 
+        area.append("==========================================\n");
+        area.append("              Employee List               \n");
+        area.append("==========================================\n\n");
+
         for (int i = 0; i < count; i++) {
             area.append("Name: " + employees[i].getName() + "\n");
             area.append("ID: " + employees[i].getEmployeeId() + "\n");
@@ -189,7 +192,7 @@ public class EmployeeUI extends JFrame {
             area.append("Phone: " + employees[i].getPhoneNumber() + "\n");
             area.append("Position: " + employees[i].getPosition() + "\n");
             area.append("Salary: $" + employees[i].getSalary() + "\n");
-            area.append("-------------------------\n");
+            area.append("------------------------------------------\n\n");
         }
 
         win.add(new JScrollPane(area));
@@ -204,7 +207,7 @@ public class EmployeeUI extends JFrame {
         if (id == null) return;
 
         for (int i = 0; i < count; i++) {
-            if (employees[i].getEmployeeId().equals(id)) {
+            if (employees[i].getEmployeeId().trim().equalsIgnoreCase(id.trim())) {
 
                 JOptionPane.showMessageDialog(this,
                         "FOUND! 🎯\n\nName: " + employees[i].getName() +
@@ -218,17 +221,22 @@ public class EmployeeUI extends JFrame {
         JOptionPane.showMessageDialog(this, "Employee Not Found 😢");
     }
 
-    // ================= SAVE =================
+    // ================= SAVE ESTÉTICO =================
     private void saveToTxt() {
         try (PrintWriter pw = new PrintWriter(new FileWriter("employees.txt"))) {
 
+            pw.println("==========================================");
+            pw.println("              Employee List              ");
+            pw.println("==========================================\n");
+
             for (int i = 0; i < count; i++) {
-                pw.println(employees[i].getName());
-                pw.println(employees[i].getEmployeeId());
-                pw.println(employees[i].getEmail());
-                pw.println(employees[i].getPhoneNumber());
-                pw.println(employees[i].getPosition());
-                pw.println(employees[i].getSalary());
+                pw.println("Name: " + employees[i].getName());
+                pw.println("ID: " + employees[i].getEmployeeId());
+                pw.println("Email: " + employees[i].getEmail());
+                pw.println("Phone: " + employees[i].getPhoneNumber());
+                pw.println("Position: " + employees[i].getPosition());
+                pw.println("Salary: " + employees[i].getSalary());
+                pw.println("------------------------------------------\n");
             }
 
             JOptionPane.showMessageDialog(this, "Saved to employees.txt");
@@ -238,7 +246,7 @@ public class EmployeeUI extends JFrame {
         }
     }
 
-    // ================= LOAD =================
+    // ================= LOAD DEL TXT ESTÉTICO =================
     private void loadFromTxt() {
         try (BufferedReader br = new BufferedReader(new FileReader("employees.txt"))) {
 
@@ -247,16 +255,19 @@ public class EmployeeUI extends JFrame {
 
             while ((line = br.readLine()) != null) {
 
-                Employee emp = new Employee();
+                if (line.startsWith("Name:")) {
 
-                emp.setName(line);
-                emp.setEmployeeId(br.readLine());
-                emp.setEmail(br.readLine());
-                emp.setPhoneNumber(br.readLine());
-                emp.setPosition(br.readLine());
-                emp.setSalary(Double.parseDouble(br.readLine()));
+                    Employee emp = new Employee();
 
-                employees[count++] = emp;
+                    emp.setName(line.substring(6).trim());
+                    emp.setEmployeeId(br.readLine().substring(4).trim());
+                    emp.setEmail(br.readLine().substring(6).trim());
+                    emp.setPhoneNumber(br.readLine().substring(6).trim());
+                    emp.setPosition(br.readLine().substring(10).trim());
+                    emp.setSalary(Double.parseDouble(br.readLine().substring(7).trim()));
+
+                    employees[count++] = emp;
+                }
             }
 
             JOptionPane.showMessageDialog(this, "Employee list loaded!");
@@ -269,4 +280,40 @@ public class EmployeeUI extends JFrame {
     public static void main(String[] args) {
         new EmployeeUI().setVisible(true);
     }
+
+    // ================= DELETE EMPLOYEE =================
+    private void deleteEmployee() {
+
+        String id = JOptionPane.showInputDialog(this, "Enter Employee ID to delete:");
+
+        if (id == null || id.isEmpty()) return;
+
+        for (int i = 0; i < count; i++) {
+            if (employees[i].getEmployeeId().equalsIgnoreCase(id)) {
+
+                int confirm = JOptionPane.showConfirmDialog(
+                        this,
+                        "Do you really want to delete the employee: " + employees[i].getName() + "?",
+                        "Confirm Delete",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+
+                    for (int j = i; j < count - 1; j++) {
+                        employees[j] = employees[j + 1];
+                    }
+
+                    employees[count - 1] = null;
+                    count--;
+
+                    JOptionPane.showMessageDialog(this, "Employee Deleted Successfully! 🗑");
+                }
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(this, "Employee Not Found 😢");
+    }
 }
+
