@@ -1,0 +1,6 @@
+kendall
+10
+kk
+88
+Manager
+2500.0
