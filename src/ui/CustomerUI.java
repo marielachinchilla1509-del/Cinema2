@@ -38,7 +38,8 @@ public class CustomerUI extends JFrame {
         add(title, BorderLayout.NORTH);
 
         // ==== BUTTON PANEL ====
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 30, 30));
+        JPanel buttonPanel
+                = new JPanel(new GridLayout(3, 2, 30, 30));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
         buttonPanel.setBackground(white);
 
@@ -65,9 +66,8 @@ public class CustomerUI extends JFrame {
         btnBack.setBackground(Color.LIGHT_GRAY);
         btnBack.setForeground(Color.BLACK);
         btnBack.setFocusPainted(false);
-        btnBack.setPreferredSize(new Dimension(180, 40));
-
         btnBack.addActionListener(e -> dispose());
+
         backPanel.add(btnBack);
         add(backPanel, BorderLayout.SOUTH);
 
@@ -79,7 +79,6 @@ public class CustomerUI extends JFrame {
         btnLoad.addActionListener(e -> openLoadWindow());
     }
 
-    // Button Style
     private JButton createBigButton(String text, Color bg, Color fg) {
         JButton button = new JButton(text);
         button.setFont(new Font("Inter", Font.BOLD, 22));
@@ -87,19 +86,13 @@ public class CustomerUI extends JFrame {
         button.setForeground(fg);
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
-        button.setPreferredSize(new Dimension(350, 120));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setOpaque(true);
         button.setBorderPainted(false);
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override public void mouseEntered(java.awt.event.MouseEvent e) { button.setBackground(bg.darker()); }
-            @Override public void mouseExited(java.awt.event.MouseEvent e) { button.setBackground(bg); }
-        });
         return button;
     }
 
     // ============================================================
-    // REGISTER WINDOW
+    // REGISTER CUSTOMER
     // ============================================================
     private void openRegisterWindow() {
 
@@ -121,7 +114,6 @@ public class CustomerUI extends JFrame {
         header.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         reg.add(header, BorderLayout.NORTH);
 
-        // FORM PANEL
         JPanel form = new JPanel(new GridLayout(8, 1, 10, 10));
         form.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         form.setBackground(Color.WHITE);
@@ -135,9 +127,7 @@ public class CustomerUI extends JFrame {
         chkVip.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         chkVip.setBackground(Color.WHITE);
 
-        // MEMBERSHIP PANEL (VISIBLE ONLY IF VIP)
-        JPanel membershipPanel = new JPanel();
-        membershipPanel.setLayout(new GridLayout(1,1));
+        JPanel membershipPanel = new JPanel(new GridLayout(1, 1));
         membershipPanel.setBackground(Color.WHITE);
 
         String[] membershipOptions = {"BASIC", "PRO", "PREMIUM"};
@@ -145,9 +135,8 @@ public class CustomerUI extends JFrame {
         cbMembership.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
         membershipPanel.add(cbMembership);
-        membershipPanel.setVisible(false); // initially hidden
+        membershipPanel.setVisible(false);
 
-        // Event: show/hide membership field
         chkVip.addActionListener(e -> {
             membershipPanel.setVisible(chkVip.isSelected());
         });
@@ -161,15 +150,36 @@ public class CustomerUI extends JFrame {
 
         reg.add(form, BorderLayout.CENTER);
 
-        // SAVE BUTTON
         JButton btnSave = new JButton("✅ Register Customer");
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 20));
         btnSave.setBackground(red);
         btnSave.setForeground(Color.WHITE);
-        btnSave.setFocusPainted(false);
-        btnSave.setPreferredSize(new Dimension(200, 50));
 
         btnSave.addActionListener(e -> {
+
+            // VALIDACION 1: Campos vacíos
+            if (txtName.getText().isEmpty()
+                    || txtId.getText().isEmpty()
+                    || txtEmail.getText().isEmpty()
+                    || txtPhone.getText().isEmpty()) {
+
+                JOptionPane.showMessageDialog(reg,
+                        "❌ All fields must be filled",
+                        "Empty Fields",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // VALIDACION 2: ID repetido
+            for (int i = 0; i < count; i++) {
+                if (customers[i].getId().equals(txtId.getText())) {
+                    JOptionPane.showMessageDialog(reg,
+                            "❌ ID already exists",
+                            "Duplicate ID",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
 
             Customer c = new Customer();
             Membership m = new Membership();
@@ -180,26 +190,25 @@ public class CustomerUI extends JFrame {
             c.setPhoneNumber(txtPhone.getText());
             c.setVip(chkVip.isSelected());
 
-            // Only set membership if VIP
             if (chkVip.isSelected()) {
                 m.setType(TypeMembership.valueOf(cbMembership.getSelectedItem().toString()));
             } else {
-                m.setType(null); // no membership
+                m.setType(null);
             }
 
             customers[count] = c;
             memberships[count] = m;
             count++;
 
-            JOptionPane.showMessageDialog(reg, "Customer Registered!");
+            JOptionPane.showMessageDialog(reg, "✅ Customer Registered Successfully!");
             reg.dispose();
         });
 
         JPanel bottom = new JPanel();
         bottom.setBackground(Color.WHITE);
         bottom.add(btnSave);
-
         reg.add(bottom, BorderLayout.SOUTH);
+
         reg.setVisible(true);
     }
 
@@ -211,111 +220,201 @@ public class CustomerUI extends JFrame {
     }
 
     // ============================================================
-    // LIST CUSTOMERS
+    // LIST CUSTOMERS (AHORA CON BOTÓN DE ELIMINAR POR CADA FILA)
     // ============================================================
     private void listCustomers() {
 
         JFrame win = new JFrame("📄 Customer List");
-        win.setSize(600, 700);
+        win.setSize(800, 500);
         win.setLocationRelativeTo(null);
+        win.setLayout(new BorderLayout(10, 10));
 
-        JTextArea area = new JTextArea();
-        area.setFont(new Font("Inter", Font.PLAIN, 16));
-        area.setEditable(false);
+        // ======== TÍTULO =========
+        JLabel title = new JLabel("📄 Customer List", SwingConstants.CENTER);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        title.setOpaque(true);
+        title.setBackground(new Color(10, 25, 60));
+        title.setForeground(Color.WHITE);
+        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        win.add(title, BorderLayout.NORTH);
+
+        // ======== TABLA CON BOTÓN ELIMINAR =========
+        String[] columnas = {"Name", "ID", "Email", "Phone", "VIP", "Membership", "Delete"};
+
+        String[][] datos = new String[count][7];
 
         for (int i = 0; i < count; i++) {
-            area.append("Name: " + customers[i].getName() + "\n");
-            area.append("ID: " + customers[i].getId() + "\n");
-            area.append("Email: " + customers[i].getEmail() + "\n");
-            area.append("Phone: " + customers[i].getPhoneNumber() + "\n");
-            area.append("VIP: " + customers[i].isVip() + "\n");
-            area.append("Membership: " + memberships[i].getType() + "\n");
-            area.append("-------------------------\n");
+            datos[i][0] = customers[i].getName();
+            datos[i][1] = customers[i].getId();
+            datos[i][2] = customers[i].getEmail();
+            datos[i][3] = customers[i].getPhoneNumber();
+            datos[i][4] = String.valueOf(customers[i].isVip());
+            datos[i][5] = String.valueOf(memberships[i].getType());
+            datos[i][6] = "🗑️️";
         }
 
-        win.add(new JScrollPane(area));
+        JTable table = new JTable(datos, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 6;  // solo eliminar
+            }
+        };
+
+        table.setFont(new Font("Inter", Font.PLAIN, 15));
+        table.setRowHeight(35);
+        table.getTableHeader().setFont(new Font("Inter", Font.BOLD, 16));
+        table.getTableHeader().setBackground(new Color(230, 230, 230));
+
+        // Acción del basurero
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                int col = table.columnAtPoint(e.getPoint());
+
+                if (col == 6) {
+                    deleteCustomer(row);
+                    win.dispose();
+                    listCustomers();
+                }
+            }
+        });
+
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        win.add(scroll, BorderLayout.CENTER);
+
+        // ======== BOTÓN SALIR =========
+        JButton btnClose = new JButton("Close");
+        btnClose.setFont(new Font("Inter", Font.BOLD, 18));
+        btnClose.addActionListener(e -> win.dispose());
+
+        JPanel bottom = new JPanel();
+        bottom.add(btnClose);
+        win.add(bottom, BorderLayout.SOUTH);
+
         win.setVisible(true);
     }
 
-    // ============================================================
-    // SEARCH WINDOW
-    // ============================================================
-    private void openSearchWindow() {
+// ================================================
+// CONFIRMACIÓN DE ELIMINAR (CON JFRAME)
+// ================================================
+    private void deleteCustomer(int index) {
 
-        JFrame search = new JFrame("🔍 Search Customer");
-        search.setSize(450, 300);
-        search.setLocationRelativeTo(null);
-        search.setLayout(new BorderLayout(10,10));
-        search.getContentPane().setBackground(Color.WHITE);
+        JFrame confirm = new JFrame("🗑️ Confirm Delete");
+        confirm.setAlwaysOnTop(true); // NO SE ENVÍA AL FONDO
+        confirm.setLayout(new BorderLayout(10, 10));
+        confirm.getContentPane().setBackground(Color.WHITE);
 
-        JLabel title = new JLabel("🔍 Search Customer", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 23));
-        title.setOpaque(true);
-        title.setBackground(new Color(20, 20, 60));
-        title.setForeground(Color.WHITE);
-        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        // ===== TITLE =====
+        JLabel lbl = new JLabel("Delete this customer?", SwingConstants.CENTER);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lbl.setForeground(Color.BLACK);
+        lbl.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        confirm.add(lbl, BorderLayout.NORTH);
 
-        JPanel center = new JPanel(new GridLayout(2,1,10,10));
-        center.setBackground(Color.WHITE);
-        center.setBorder(BorderFactory.createEmptyBorder(20,40,20,40));
+        // ===== CUSTOMER INFO =====
+        JTextArea info = new JTextArea();
+        info.setEditable(false);
+        info.setBackground(Color.WHITE);
+        info.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
-        JTextField txtSearch = new JTextField();
-        txtSearch.setBorder(BorderFactory.createTitledBorder("Enter ID"));
-        txtSearch.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        info.setText(
+                "Name: " + customers[index].getName() + "\n"
+                + "ID: " + customers[index].getId() + "\n"
+                + "Email: " + customers[index].getEmail() + "\n"
+                + "Phone: " + customers[index].getPhoneNumber() + "\n"
+                + "VIP: " + customers[index].isVip() + "\n"
+                + "Membership: " + memberships[index].getType() + "\n"
+        );
 
-        JButton btnSearch = new JButton("Search");
-        btnSearch.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        btnSearch.setBackground(new Color(25, 25, 25));
-        btnSearch.setForeground(Color.WHITE);
+        JScrollPane scroll = new JScrollPane(info);
+        confirm.add(scroll, BorderLayout.CENTER);
 
-        center.add(txtSearch);
-        center.add(btnSearch);
+        // ===== BUTTONS PANEL =====
+        JPanel buttons = new JPanel(new FlowLayout());
+        buttons.setBackground(Color.WHITE);
 
-        search.add(title, BorderLayout.NORTH);
-        search.add(center, BorderLayout.CENTER);
+        // ==== RED TRASH BUTTON ====  
+        JButton btnDelete = new JButton("🗑️ Delete");
+        btnDelete.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnDelete.setBackground(new Color(200, 30, 30)); // rojo oscuro
+        btnDelete.setForeground(Color.WHITE);
+        btnDelete.setFocusPainted(false);
 
-        btnSearch.addActionListener(e -> {
-            String id = txtSearch.getText();
+        // ==== CANCEL BUTTON ====
+        JButton btnCancel = new JButton("Cancel");
+        btnCancel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        btnCancel.setBackground(Color.LIGHT_GRAY);
+        btnCancel.setForeground(Color.BLACK);
 
-            for (int i = 0; i < count; i++) {
-                if (customers[i].getId().equals(id)) {
+        buttons.add(btnDelete);
+        buttons.add(btnCancel);
 
-                    JFrame result = new JFrame("Customer Info");
-                    result.setSize(400, 350);
-                    result.setLocationRelativeTo(null);
+        confirm.add(buttons, BorderLayout.SOUTH);
 
-                    JTextArea area = new JTextArea();
-                    area.setFont(new Font("Inter", Font.PLAIN, 16));
-                    area.setEditable(false);
-                    area.setText(
-                            "Name: " + customers[i].getName() +
-                            "\nEmail: " + customers[i].getEmail() +
-                            "\nPhone: " + customers[i].getPhoneNumber() +
-                            "\nVIP: " + customers[i].isVip() +
-                            "\nMembership: " + memberships[i].getType()
-                    );
+        // ====== ACTIONS ======
+        btnCancel.addActionListener(e -> confirm.dispose());
 
-                    result.add(new JScrollPane(area));
-                    result.setVisible(true);
-                    return;
-                }
+        btnDelete.addActionListener(e -> {
+
+            // Mover elementos
+            for (int i = index; i < count - 1; i++) {
+                customers[i] = customers[i + 1];
+                memberships[i] = memberships[i + 1];
             }
 
-            JOptionPane.showMessageDialog(search, "Customer not found.");
+            customers[count - 1] = null;
+            memberships[count - 1] = null;
+            count--;
+
+            // Actualizar el archivo
+            updateTxtAfterDelete();
+
+            confirm.dispose();
+
+            JOptionPane.showMessageDialog(null,
+                    "Customer deleted successfully!",
+                    "Deleted",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
 
-        search.setVisible(true);
+        confirm.pack();         // Se ajusta al contenido
+        confirm.setSize(450, 350); // Tamaño agradable
+        confirm.setLocationRelativeTo(null);
+        confirm.setVisible(true);
+    }
+
+// ============================================================
+// WRITE UPDATED LIST TO TXT (AFTER DELETE)
+// ============================================================
+    private void updateTxtAfterDelete() {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("customers.txt", false))) {
+
+            for (int i = 0; i < count; i++) {
+                pw.println(customers[i].getName());
+                pw.println(customers[i].getId());
+                pw.println(customers[i].getEmail());
+                pw.println(customers[i].getPhoneNumber());
+                pw.println(customers[i].isVip());
+                pw.println(memberships[i].getType());
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error updating file after delete.");
+        }
     }
 
     // ============================================================
-    // SAVE WINDOW
+    // SAVE (integración inteligente) - lo dejamos tal como estaba
     // ============================================================
     private void openSaveWindow() {
 
         JFrame win = new JFrame("💾 Save Customers");
         win.setSize(400, 200);
         win.setLocationRelativeTo(null);
-        win.setLayout(new GridLayout(2,1,10,10));
+        win.setLayout(new GridLayout(2, 1, 10, 10));
 
         JLabel lbl = new JLabel("Save list to customers.txt?", SwingConstants.CENTER);
         lbl.setFont(new Font("Inter", Font.BOLD, 18));
@@ -333,34 +432,35 @@ public class CustomerUI extends JFrame {
         win.setVisible(true);
     }
 
-    private void saveToTxt() {
-        try (PrintWriter pw = new PrintWriter(new FileWriter("customers.txt"))) {
+   private void saveToTxt() {
+    try (PrintWriter pw = new PrintWriter(new FileWriter("customers.txt"))) {
 
-            for (int i = 0; i < count; i++) {
-                pw.println(customers[i].getName());
-                pw.println(customers[i].getId());
-                pw.println(customers[i].getEmail());
-                pw.println(customers[i].getPhoneNumber());
-                pw.println(customers[i].isVip());
-                pw.println(memberships[i].getType());
-            }
+        for (int i = 0; i < count; i++) {
 
-            JOptionPane.showMessageDialog(null, "Saved to customers.txt");
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            pw.println("Name: " + customers[i].getName());
+            pw.println("ID: " + customers[i].getId());
+            pw.println("Email: " + customers[i].getEmail());
+            pw.println("Phone: " + customers[i].getPhoneNumber());
+            pw.println("VIP: " + customers[i].isVip());
+            pw.println("Membership: " + memberships[i].getType());
+            pw.println("------------------------------");
+            pw.println(); // Línea vacía para separar clientes
         }
+
+    } catch (Exception ex) {
+        ex.printStackTrace();
     }
+}
 
     // ============================================================
-    // LOAD WINDOW
+    // LOAD CUSTOMERS
     // ============================================================
     private void openLoadWindow() {
 
         JFrame win = new JFrame("📁 Load Customers");
         win.setSize(400, 200);
         win.setLocationRelativeTo(null);
-        win.setLayout(new GridLayout(2,1,10,10));
+        win.setLayout(new GridLayout(2, 1, 10, 10));
 
         JLabel lbl = new JLabel("Load customers.txt?", SwingConstants.CENTER);
         lbl.setFont(new Font("Inter", Font.BOLD, 18));
@@ -396,7 +496,7 @@ public class CustomerUI extends JFrame {
                 c.setVip(Boolean.parseBoolean(br.readLine()));
 
                 String membershipType = br.readLine();
-                if (!membershipType.equals("null")) {
+                if (membershipType != null && !membershipType.equals("null")) {
                     m.setType(TypeMembership.valueOf(membershipType));
                 } else {
                     m.setType(null);
@@ -412,5 +512,32 @@ public class CustomerUI extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error loading file.");
         }
+    }
+
+    // ============================================================
+    // Helper: reescribir archivo EXACTAMENTE con lo que hay en memoria
+    // ============================================================
+    private void writeAllToFile() {
+        File file = new File("customers.txt");
+        try (PrintWriter pw = new PrintWriter(new FileWriter(file, false))) {
+            for (int i = 0; i < count; i++) {
+                String membershipStr = (memberships[i] != null && memberships[i].getType() != null)
+                        ? memberships[i].getType().toString() : "null";
+
+                pw.println(customers[i].getName());
+                pw.println(customers[i].getId());
+                pw.println(customers[i].getEmail());
+                pw.println(customers[i].getPhoneNumber());
+                pw.println(String.valueOf(customers[i].isVip()));
+                pw.println(membershipStr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error writing file.");
+        }
+    }
+
+    private void openSearchWindow() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
