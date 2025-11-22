@@ -6,6 +6,7 @@ import proyecto1.cinema.TicketSalesModule;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,9 @@ public class SellProductUI extends JFrame {
     private final TicketSalesModule module;
     private double total = 0.0;
     private JLabel totalLabel;
+
+    // Carpeta relativa para facturas de productos
+    private final String INVOICE_FOLDER = "invoices";
 
     public SellProductUI(TicketSalesModule module) {
         this.module = module;
@@ -190,29 +194,41 @@ public class SellProductUI extends JFrame {
     }
 
     private void saveInvoiceToFile(Ticket t) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
-        String fileName = "invoice_product_" + sdf.format(t.getDate()) + ".txt";
+        try {
+            File folder = new File(INVOICE_FOLDER);
+            if (!folder.exists()) folder.mkdirs();
 
-        double tax = Math.round(t.getPrice() * 0.13 * 100.0) / 100.0;
-        double total = Math.round((t.getPrice() + tax) * 100.0) / 100.0;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String fileName = "invoice_product_" + sdf.format(t.getDate()) + ".txt";
 
-        try (FileWriter writer = new FileWriter(fileName)) {
-            writer.write("----------------------------------------\n");
-            writer.write("             🍫 CINEMA INVOICE\n");
-            writer.write("----------------------------------------\n");
-            writer.write("Purchase: Snack Products\n");
-            writer.write("Date: " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(t.getDate()) + "\n");
-            writer.write("Payment: Cash\n");
-            writer.write("----------------------------------------\n");
-            writer.write(String.format("SUBTOTAL: $%.2f\n", t.getPrice()));
-            writer.write(String.format("TAX (13%%): $%.2f\n", tax));
-            writer.write("----------------------------------------\n");
-            writer.write(String.format("TOTAL: $%.2f\n", total));
-            writer.write("\n----------------------------------------\n");
-            writer.write("Thank you for your purchase! 🍿");
+            double tax = Math.round(t.getPrice() * 0.13 * 100.0) / 100.0;
+            double total = Math.round((t.getPrice() + tax) * 100.0) / 100.0;
+
+            File file = new File(folder, fileName);
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("----------------------------------------\n");
+                writer.write("             🍫 CINEMA INVOICE\n");
+                writer.write("----------------------------------------\n");
+                writer.write("Purchase: Snack Products\n");
+                writer.write("Date: " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(t.getDate()) + "\n");
+                writer.write("Payment: Cash\n");
+                writer.write("----------------------------------------\n");
+                writer.write(String.format("SUBTOTAL: $%.2f\n", t.getPrice()));
+                writer.write(String.format("TAX (13%%): $%.2f\n", tax));
+                writer.write("----------------------------------------\n");
+                writer.write(String.format("TOTAL: $%.2f\n", total));
+                writer.write("\n----------------------------------------\n");
+                writer.write("Thank you for your purchase! 🍿");
+            }
+
+            JOptionPane.showMessageDialog(this,
+                    "✅ Invoice saved successfully!\nFile: " + file.getAbsolutePath(),
+                    "Invoice Saved",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this,
-                    "Error saving invoice file.",
+                    "❌ Error saving invoice file.",
                     "File Error",
                     JOptionPane.ERROR_MESSAGE);
         }

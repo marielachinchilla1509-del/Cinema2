@@ -1,20 +1,20 @@
 ----------------------------------------
          🎟  CINEMA INVOICE
 ----------------------------------------
-Movie: HOPE ON THE STAGE
-Room: 3
+Movie: DOLLHOUSE
+Room: 2
 Seat: 1
 Type: Adult
 Payment: Cash
-Date: 19/11/2025 16:11
+Date: 21/11/2025 11:14
 ----------------------------------------
-PRICE: $4,00
-TAX (13%): $0,52
+PRICE: $4,50
+TAX (13%): $0,59
 ----------------------------------------
-TOTAL: $4,52
+TOTAL: $5,09
 ----------------------------------------
 Thank you for your purchase! 🍿
 
 === SYSTEM GENERATED INVOICE ===
-Generated on: 19/11/2025 16:11:50
-File: invoice_20251119_161144.txt
+Generated on: 21/11/2025 11:14:51
+File: C:\Users\hp\OneDrive\Datos adjuntos\Documentos\NetBeansProjects\CopiaProyecto\Cinema2\Cinema2\invoice\invoiceticket_20251121_111444.txt

@@ -1,20 +1,20 @@
 ----------------------------------------
          🎟  CINEMA INVOICE
 ----------------------------------------
-Movie: HARRY POTTER
-Room: 2
-Seat: 5
-Type: Senior
-Payment: Card
-Date: 18/11/2025 16:20
+Movie: DOLLHOUSE
+Room: 1
+Seat: 1
+Type: Adult
+Payment: Cash
+Date: 22/11/2025 10:35
 ----------------------------------------
-PRICE: $6,00
-TAX (13%): $0,78
+PRICE: $4,50
+TAX (13%): $0,59
 ----------------------------------------
-TOTAL: $6,78
+TOTAL: $5,09
 ----------------------------------------
 Thank you for your purchase! 🍿
 
 === SYSTEM GENERATED INVOICE ===
-Generated on: 18/11/2025 16:20:21
-File: invoice_20251118_162012.txt
+Generated on: 22/11/2025 10:35:39
+File: C:\Users\hp\OneDrive\Datos adjuntos\Documentos\NetBeansProjects\CopiaProyecto\Cinema2\Cinema2\invoice\invoiceticket_20251122_103539.txt

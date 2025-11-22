@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,6 +19,9 @@ import java.util.Map;
 public class SellTicketUI extends JFrame {
 
     private final TicketSalesModule module;
+
+    // Carpeta relativa donde se guardarán las facturas
+    private final String INVOICE_FOLDER = "invoice";
 
     public SellTicketUI(TicketSalesModule module) {
         this.module = module;
@@ -79,7 +83,7 @@ public class SellTicketUI extends JFrame {
 
         JLabel lblPrice = new JLabel("💲 Price:");
         JTextField txtPrice = new JTextField();
-        txtPrice.setEditable(false); // 🔒 user cannot type manually
+        txtPrice.setEditable(false);
 
         // ===== Auto-fill price based on movie =====
         cbMovie.addItemListener(e -> {
@@ -112,10 +116,8 @@ public class SellTicketUI extends JFrame {
         btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnSave.setPreferredSize(new Dimension(220, 50));
 
-        // ===== FIXED ACTION =====
         btnSave.addActionListener((ActionEvent e) -> {
             try {
-                // ✅ Corrige coma decimal según configuración regional
                 double price = Double.parseDouble(txtPrice.getText().replace(",", "."));
 
                 Ticket t = new Ticket();
@@ -130,7 +132,7 @@ public class SellTicketUI extends JFrame {
 
                 module.addTicket(t);
 
-                // ✅ Show Invoice Window and save to file
+                // Show invoice and save to file
                 showInvoice(t);
 
                 dispose();
@@ -165,7 +167,6 @@ public class SellTicketUI extends JFrame {
         panel.add(header, BorderLayout.NORTH);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        SimpleDateFormat fileSdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("Consolas", Font.PLAIN, 16));
@@ -224,34 +225,39 @@ public class SellTicketUI extends JFrame {
 
         invoiceFrame.add(panel);
         invoiceFrame.setVisible(true);
-        
-        // Auto-save invoice when window opens
+
+        // Auto-save invoice
         saveInvoiceToFile(t, invoiceContent);
     }
 
     // ===== SAVE INVOICE TO TXT FILE =====
     private void saveInvoiceToFile(Ticket t, String invoiceContent) {
         try {
+            // Crear carpeta invoice si no existe
+            File folder = new File(INVOICE_FOLDER);
+            if (!folder.exists()) folder.mkdirs();
+
             SimpleDateFormat fileSdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String fileName = "invoice_" + fileSdf.format(t.getDate()) + ".txt";
-            
-            FileWriter fileWriter = new FileWriter(fileName);
+            String fileName = "invoiceticket_" + fileSdf.format(t.getDate()) + ".txt";
+
+            File file = new File(folder, fileName);
+
+            FileWriter fileWriter = new FileWriter(file);
             PrintWriter printWriter = new PrintWriter(fileWriter);
-            
-            // Write invoice content to file
+
             printWriter.println(invoiceContent);
             printWriter.println("\n=== SYSTEM GENERATED INVOICE ===");
             printWriter.println("Generated on: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
-            printWriter.println("File: " + fileName);
-            
+            printWriter.println("File: " + file.getAbsolutePath());
+
             printWriter.close();
-            
+
             JOptionPane.showMessageDialog(this,
                 "✅ Invoice saved successfully!\n" +
-                "File: " + fileName,
+                "File: " + file.getAbsolutePath(),
                 "Invoice Saved",
                 JOptionPane.INFORMATION_MESSAGE);
-                
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this,
                 "❌ Error saving invoice: " + e.getMessage(),
@@ -260,7 +266,7 @@ public class SellTicketUI extends JFrame {
         }
     }
 
-    // ===== MAIN FOR TESTING =====
+    // ===== MAIN =====
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new SellTicketUI(new TicketSalesModule()).setVisible(true));
     }

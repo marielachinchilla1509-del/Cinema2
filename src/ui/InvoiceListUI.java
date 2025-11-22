@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.io.File;
+import java.awt.Desktop;
 
 public class InvoiceListUI extends JFrame {
 
@@ -12,9 +13,8 @@ public class InvoiceListUI extends JFrame {
     private JLabel counterLabel;
     private JTextField searchField;
 
-    // 📌 Folder where ticket invoices (.txt) are stored
-    private final String INVOICE_PATH =
-        "C:\\Users\\hp\\OneDrive\\Datos adjuntos\\Documentos\\NetBeansProjects\\CopiaProyecto\\Cinema2";
+    // Carpeta relativa dentro del proyecto
+    private final String INVOICE_PATH = "invoice";
 
     public InvoiceListUI() {
         setTitle("Ticket Invoice List");
@@ -110,18 +110,16 @@ public class InvoiceListUI extends JFrame {
     private void loadInvoices() {
         model.setRowCount(0);
 
+        // Crear la carpeta si no existe
         File folder = new File(INVOICE_PATH);
-        if (!folder.exists() || !folder.isDirectory()) {
-            JOptionPane.showMessageDialog(this,
-                    "Invalid path:\n" + INVOICE_PATH,
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
 
-        // ✅ Filter: only ticket invoices, exclude product invoices
+        // Filtrar solo archivos .txt que no sean de productos
         File[] files = folder.listFiles((dir, name) ->
-                name.endsWith(".txt") && !name.contains("invoice_product")
+                name.toLowerCase().endsWith(".txt") &&
+                !name.toLowerCase().contains("invoice_product")
         );
 
         if (files == null || files.length == 0) {
@@ -170,7 +168,7 @@ public class InvoiceListUI extends JFrame {
         row = table.convertRowIndexToModel(row);
 
         String fileName = (String) model.getValueAt(row, 0);
-        File file = new File(INVOICE_PATH + "\\" + fileName);
+        File file = new File(INVOICE_PATH + File.separator + fileName);
 
         if (!file.exists()) {
             JOptionPane.showMessageDialog(this,
@@ -191,9 +189,10 @@ public class InvoiceListUI extends JFrame {
     }
 
     // -------------------------------------------
-    // MAIN FOR TESTING
+    // MAIN
     // -------------------------------------------
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new InvoiceListUI().setVisible(true));
     }
 }
+

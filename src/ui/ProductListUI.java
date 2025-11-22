@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.io.File;
+import java.awt.Desktop;
 
 public class ProductListUI extends JFrame {
 
@@ -12,9 +13,8 @@ public class ProductListUI extends JFrame {
     private JLabel counterLabel;
     private JTextField searchField;
 
-    // 📌 Folder where product invoices (.txt) are stored
-    private final String PRODUCT_INVOICE_PATH =
-        "C:\\Users\\hp\\OneDrive\\Datos adjuntos\\Documentos\\NetBeansProjects\\CopiaProyecto\\Cinema2";
+    // Carpeta relativa para facturas
+    private final String INVOICE_FOLDER = "invoices";
 
     public ProductListUI() {
         setTitle("Product Invoice List");
@@ -63,7 +63,6 @@ public class ProductListUI extends JFrame {
         table.getTableHeader().setBackground(new Color(230, 230, 230));
         table.setSelectionBackground(new Color(200, 220, 255));
 
-        // 🔄 Column sorting
         table.setAutoCreateRowSorter(true);
 
         add(new JScrollPane(table), BorderLayout.CENTER);
@@ -92,9 +91,7 @@ public class ProductListUI extends JFrame {
         loadInvoices();
     }
 
-    // -------------------------------------------
-    // STYLE FOR ALL BUTTONS
-    // -------------------------------------------
+    // ---------- BUTTON STYLE ----------
     private void styleButton(JButton btn) {
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setBackground(new Color(60, 120, 210));
@@ -104,24 +101,16 @@ public class ProductListUI extends JFrame {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
-    // -------------------------------------------
-    // LOAD ONLY PRODUCT INVOICES (.txt) FROM FOLDER
-    // -------------------------------------------
+    // ---------- LOAD PRODUCT INVOICES ----------
     private void loadInvoices() {
         model.setRowCount(0);
 
-        File folder = new File(PRODUCT_INVOICE_PATH);
-        if (!folder.exists() || !folder.isDirectory()) {
-            JOptionPane.showMessageDialog(this,
-                    "Invalid path:\n" + PRODUCT_INVOICE_PATH,
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        File folder = new File(INVOICE_FOLDER);
+        if (!folder.exists()) folder.mkdirs();
 
-        // ✅ Filter: only product invoices
         File[] files = folder.listFiles((dir, name) ->
-                name.endsWith(".txt") && name.contains("invoice_product")
+                name.toLowerCase().endsWith(".txt") &&
+                name.toLowerCase().contains("invoice_product") // solo productos
         );
 
         if (files == null || files.length == 0) {
@@ -137,9 +126,7 @@ public class ProductListUI extends JFrame {
         counterLabel.setText("Invoices: " + files.length);
     }
 
-    // -------------------------------------------
-    // SEARCH INVOICE BY NAME
-    // -------------------------------------------
+    // ---------- SEARCH INVOICE ----------
     private void filterInvoices() {
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
         table.setRowSorter(sorter);
@@ -153,9 +140,7 @@ public class ProductListUI extends JFrame {
         }
     }
 
-    // -------------------------------------------
-    // OPEN SELECTED .TXT INVOICE
-    // -------------------------------------------
+    // ---------- OPEN SELECTED INVOICE ----------
     private void openSelectedInvoice() {
         int row = table.getSelectedRow();
         if (row == -1) {
@@ -166,11 +151,10 @@ public class ProductListUI extends JFrame {
             return;
         }
 
-        // Adjust for sorter
         row = table.convertRowIndexToModel(row);
 
         String fileName = (String) model.getValueAt(row, 0);
-        File file = new File(PRODUCT_INVOICE_PATH + "\\" + fileName);
+        File file = new File(INVOICE_FOLDER + File.separator + fileName);
 
         if (!file.exists()) {
             JOptionPane.showMessageDialog(this,
@@ -190,9 +174,7 @@ public class ProductListUI extends JFrame {
         }
     }
 
-    // -------------------------------------------
-    // MAIN FOR TESTING
-    // -------------------------------------------
+    // ---------- MAIN ----------
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new ProductListUI().setVisible(true));
     }
