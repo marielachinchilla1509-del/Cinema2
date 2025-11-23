@@ -48,19 +48,19 @@ public class CustomerModule {
         
         switch (option){
             case 1:
-                registerCustomer();
+                registerCustomer();// used for register customer
                 break;
             case 2:
-                customerList();
+                customerList();// is used for a show a list for customers
                 break;
             case 3:
-                searchCustomer();
+                searchCustomer();// used for searh a customer by id
                 break;
             case 4:
-                saveList();
+                saveList();// used for save the list of customers
                 break;
             case 5:
-                loadcustomer();
+                loadcustomer();// is used for a load the list saved by txt
                 break;
             case 0:
                     System.out.println("Returning to the main module menu...");
@@ -216,14 +216,14 @@ public class CustomerModule {
     
  */    
     
-        // 🔹 Método para buscar y devolver un cliente por su ID
+        // 🔹 Mehtod for search a customer by ID
     public Customer getCustomerById(String id) {
         for (int i = 0; i < contador; i++) {
             if (customers[i] != null && customers[i].getId().equals(id)) {
                 return customers[i];
             }
         }
-        return null; // si no se encontró
+        return null; // if the customer doesnt found the method return null
     }
 
     

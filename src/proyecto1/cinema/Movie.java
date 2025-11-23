@@ -1,25 +1,40 @@
 package proyecto1.cinema;
-import java.io.FileWriter;   // Import the FileWriter class
-import java.io.IOException;  // Import the IOException class
 
+/*
+ * The Movie class represents a film displayed in the cinema system.
+ * It contains descriptive information related to production,
+ * release details, and artistic contributors. 
+ * 
+ * This class is typically used to register movies, display movie information
+ * in listings, and associate films with scheduled showtimes.
+ */
 public class Movie {
 
+    /* Actors or main cast of the movie. */
     private String actors;
 
+    /* General description or synopsis of the movie. */
     private String descripcion;
 
+    /* Director responsible for the film production. */
     private String director;
 
+    /* Total duration of the movie. */
     private String duratation;
 
+    /* Language in which the movie is originally produced. */
     private String languaje;
 
+    /* Film production company name. */
     private String prodCompany;
 
+    /* Year the movie was released. */
     private String relaseYear;
 
+    /* Title of the movie. */
     private String title;
 
+    /* Movie genre or type (e.g., Action, Horror, Comedy). */
     private String type;
 
     public String getActors() {
@@ -94,15 +109,23 @@ public class Movie {
         this.type = type;
     }
 
+    /*
+     * Returns a readable representation of the movie information.
+     *
+     * @return formatted movie details
+     */
     @Override
     public String toString() {
-        return "Movie{" + "actors=" + actors + ", descripcion=" + descripcion +
-                ", director=" + director + ", duratation=" + duratation + 
-                ", languaje=" + languaje + ", prodCompany=" + prodCompany +
-                ", relaseYear=" + relaseYear + ", title=" + title + ", type=" 
-                + type + '}';
+        return "Movie{" +
+                "actors=" + actors +
+                ", descripcion=" + descripcion +
+                ", director=" + director +
+                ", duratation=" + duratation +
+                ", languaje=" + languaje +
+                ", prodCompany=" + prodCompany +
+                ", relaseYear=" + relaseYear +
+                ", title=" + title +
+                ", type=" + type +
+                '}';
     }
-    
-   
 }
-

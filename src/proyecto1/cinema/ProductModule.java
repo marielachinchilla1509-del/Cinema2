@@ -2,10 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyecto1.cinema;
 
 import java.io.BufferedReader;
@@ -13,37 +9,57 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.Scanner;
 
-/**
+/*
+ * ProductModule manages all product-related operations inside the system.
+ * It allows registering, editing, listing, checking stock, saving to a file
+ * and deleting products using a static array of type Product.
+ *
+ * The module is executed through a menu in the console.
+ *
  * @author Astrid
  * @author Buso
  */
 public class ProductModule {
 
+    /* Array to store registered products */
     private final Product[] product = new Product[100];
+
+    /* Counter to track the number of registered products */
     private int contador = 0;
+
+    /* Scanner to read integer inputs from the console */
     Scanner sc = new Scanner(System.in);
+
+    /* BufferedReader to read text input from console */
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    /* this is used for show the menu of product module
+    /*
+     * Displays the product menu options and handles user selection.
+     * Main entry point of the Product Module.
+     *
+     * param args program arguments
+     * throws IOException handles user input exceptions
      */
     public static void main(String[] args) throws IOException {
         ProductModule pm = new ProductModule();
         pm.showMenu();
     }
 
+    /*
+     * Shows the menu options in the console for product management.
+     * The menu remains active until the user chooses option 0.
+     */
     public void showMenu() {
         int option;
 
         do {
-
             System.out.println("\n=== PRODUCT MODULE ===");
             System.out.println("1) Register Product");
             System.out.println("2) Edit Product");
             System.out.println("3) Product Inventory");
-            System.out.println("4) Check Produck Stock");
+            System.out.println("4) Check Product Stock");
             System.out.println("5) Save Product List");
             System.out.println("6) Delete Product");
             System.out.println("0) Back to the main menu");
@@ -51,44 +67,22 @@ public class ProductModule {
             sc.nextLine();
 
             switch (option) {
-                case 1:
-                    registerProduct();
-                    break;
-
-                case 2:
-                    editProduct();
-                    break;
-
-                case 3:
-                    productInventory();
-                    break;
-
-                case 4:
-                    checkProdutcStoc();
-                    break;
-
-                case 5:
-                    SaveProductList();
-                    break;
-
-                case 6:
-                    DeleteProduct();
-                    break;
-
-                case 0:
-                    System.out.println("Returning to the main module menu...");
-                    break;
-
-                default:
-                    System.out.println("An error ocurred...");
-
+                case 1 -> registerProduct();
+                case 2 -> editProduct();
+                case 3 -> productInventory();
+                case 4 -> checkProdutcStoc();
+                case 5 -> SaveProductList();
+                case 6 -> DeleteProduct();
+                case 0 -> System.out.println("Returning to the main module menu...");
+                default -> System.out.println("An error occurred...");
             }
-        } while (option != 0);
 
+        } while (option != 0);
     }
 
     /*
-    * this method is used for registered a Product
+     * Registers a new product if storage space is available.
+     * Reads product data from console and stores it inside the array.
      */
     private void registerProduct() {
 
@@ -97,7 +91,6 @@ public class ProductModule {
             return;
         }
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.println("Enter product name:");
             String productName = br.readLine();
@@ -141,6 +134,9 @@ public class ProductModule {
         }
     }
 
+    /*
+     * Displays the list of all registered products.
+     */
     private void productInventory() {
         System.out.println("\n=== PRODUCT INVENTORY ===");
         if (contador == 0) {
@@ -159,6 +155,9 @@ public class ProductModule {
         }
     }
 
+    /*
+     * Finds a product by code and displays stock information.
+     */
     private void checkProdutcStoc() {
         try {
             System.out.println("Enter product code to check stock:");
@@ -184,6 +183,9 @@ public class ProductModule {
         }
     }
 
+    /*
+     * Edits an existing product identified by its code.
+     */
     private void editProduct() {
         try {
             System.out.println("Enter product code to edit:");
@@ -197,39 +199,27 @@ public class ProductModule {
 
                     System.out.println("Enter new name (leave empty to keep current):");
                     String newName = br.readLine();
-                    if (!newName.isEmpty()) {
-                        product[i].setProductName(newName);
-                    }
+                    if (!newName.isEmpty()) product[i].setProductName(newName);
 
                     System.out.println("Enter new category (leave empty to keep current):");
                     String newCategory = br.readLine();
-                    if (!newCategory.isEmpty()) {
-                        product[i].setCategory(newCategory);
-                    }
+                    if (!newCategory.isEmpty()) product[i].setCategory(newCategory);
 
                     System.out.println("Enter new description (leave empty to keep current):");
                     String newDesc = br.readLine();
-                    if (!newDesc.isEmpty()) {
-                        product[i].setDescription(newDesc);
-                    }
+                    if (!newDesc.isEmpty()) product[i].setDescription(newDesc);
 
                     System.out.println("Enter new price (leave empty to keep current):");
                     String newPrice = br.readLine();
-                    if (!newPrice.isEmpty()) {
-                        product[i].setPrice(Double.parseDouble(newPrice));
-                    }
+                    if (!newPrice.isEmpty()) product[i].setPrice(Double.parseDouble(newPrice));
 
                     System.out.println("Enter new stock (leave empty to keep current):");
                     String newStock = br.readLine();
-                    if (!newStock.isEmpty()) {
-                        product[i].setStock(Integer.parseInt(newStock));
-                    }
+                    if (!newStock.isEmpty()) product[i].setStock(Integer.parseInt(newStock));
 
                     System.out.println("Enter new status (leave empty to keep current):");
                     String newStatus = br.readLine();
-                    if (!newStatus.isEmpty()) {
-                        product[i].setStatus(newStatus);
-                    }
+                    if (!newStatus.isEmpty()) product[i].setStatus(newStatus);
 
                     System.out.println("Product updated successfully!");
                     break;
@@ -245,6 +235,9 @@ public class ProductModule {
         }
     }
 
+    /*
+     * Saves the list of products to a text file.
+     */
     private void SaveProductList() {
         if (contador == 0) {
             System.out.println("There are no products to save.");
@@ -252,7 +245,7 @@ public class ProductModule {
         }
 
         try {
-            FileWriter fileWriter = new FileWriter("products.txt"); // crea o sobreescribe el archivo
+            FileWriter fileWriter = new FileWriter("products.txt");
             PrintWriter printWriter = new PrintWriter(fileWriter);
 
             printWriter.println("=== PRODUCT LIST ===");
@@ -268,14 +261,17 @@ public class ProductModule {
                         + " | Status: " + p.getStatus());
             }
 
-            printWriter.close(); // cierra el archivo
+            printWriter.close();
             System.out.println("The product list was saved correctly in 'products.txt'");
 
         } catch (IOException e) {
-            System.out.println("The An error occurred while saving the product list: " + e.getMessage());
+            System.out.println("An error occurred while saving the product list: " + e.getMessage());
         }
     }
 
+    /*
+     * Deletes a product based on its code and updates the file.
+     */
     private void DeleteProduct() {
         try {
             if (contador == 0) {
@@ -288,10 +284,10 @@ public class ProductModule {
 
             boolean found = false;
 
-            // Recorremos la lista y movemos los productos hacia arriba para eliminar el encontrado
             for (int i = 0; i < contador; i++) {
                 if (product[i].getCode().equalsIgnoreCase(codeToDelete)) {
                     found = true;
+
                     for (int j = i; j < contador - 1; j++) {
                         product[j] = product[j + 1];
                     }
@@ -302,7 +298,6 @@ public class ProductModule {
             }
 
             if (found) {
-                // Reescribimos el archivo sin el producto eliminado
                 SaveProductList();
                 System.out.println("Product with code '" + codeToDelete + "' was deleted successfully.");
             } else {
@@ -313,5 +308,4 @@ public class ProductModule {
             System.out.println("An error occurred while deleting the product: " + e.getMessage());
         }
     }
-
 }

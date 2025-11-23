@@ -4,18 +4,45 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * TicketSalesModule manages ticket and product sales within the cinema system.
+ * <p>
+ * It provides functionality for selling tickets and snacks, displaying registered
+ * sales, and saving or loading sales records from a .txt file.
+ * </p>
+ *
+ * <p><b>Features included:</b></p>
+ * <ul>
+ *   <li>Selling movie tickets</li>
+ *   <li>Selling snack products</li>
+ *   <li>Listing sales records</li>
+ *   <li>Saving ticket data to a .txt file</li>
+ *   <li>Loading ticket data from a .txt file</li>
+ * </ul>
+ *
  * @author Kendall
  * @author Carolina
- * 
- * TicketSalesModule manages ticket and snack sales for the cinema.
- * It allows registering new sales, viewing and saving them in a .txt file.
  */
 public class TicketSalesModule {
 
-    private final Ticket[] tickets = new Ticket[100]; // static array for storing tickets
+    /*
+     * Array used for storing ticket and snack purchase data.
+     * Maximum storage capacity: 100 records.
+     */
+    private final Ticket[] tickets = new Ticket[100];
+
+    /*
+     * Counter to track the current number of stored tickets.
+     */
     private int counter = 0;
+
+    /*
+     * Scanner used for reading input from console.
+     */
     Scanner sc = new Scanner(System.in);
 
+    /*
+     * Displays the Ticket Sales main menu and executes the selected option.
+     */
     public void showMenu() {
         int option;
 
@@ -31,33 +58,21 @@ public class TicketSalesModule {
             sc.nextLine();
 
             switch (option) {
-                case 1:
-                    sellTicket();
-                    break;
-                case 2:
-                    sellProduct();
-                    break;
-                case 3:
-                    ticketList();
-                    break;
-                case 4:
-                    saveTickets();
-                    break;
-                case 5:
-                    loadTickets();
-                    break;
-                case 0:
-                    System.out.println("Returning to main menu...");
-                    break;
-                default:
-                    System.out.println("Invalid option. Try again.");
+                case 1 -> sellTicket();
+                case 2 -> sellProduct();
+                case 3 -> ticketList();
+                case 4 -> saveTickets();
+                case 5 -> loadTickets();
+                case 0 -> System.out.println("Returning to main menu...");
+                default -> System.out.println("Invalid option. Try again.");
             }
 
         } while (option != 0);
     }
 
-    /**
-     * Method to sell a movie ticket.
+    /*
+     * Registers and stores a new movie ticket sale.
+     * <p>If the array is full, the system shows an alert message.</p>
      */
     private void sellTicket() {
         if (counter >= tickets.length) {
@@ -94,14 +109,16 @@ public class TicketSalesModule {
         t.setDate(new Date());
         t.setStatus("Sold");
 
-        tickets[counter] = t;
-        counter++;
-
+        tickets[counter++] = t;
         System.out.println("Ticket sold successfully!");
     }
 
-    /**
-     * Method to sell snacks or products (e.g. popcorn, soda, etc.).
+    /*
+     * Allows selling snack products such as popcorn, soda, candy, and nachos.
+     * <p>
+     * The total purchase amount is automatically calculated.
+     * The sale is stored as a Ticket object of type "Product".
+     * </p>
      */
     private void sellProduct() {
         if (counter >= tickets.length) {
@@ -111,6 +128,7 @@ public class TicketSalesModule {
 
         double total = 0;
         int option;
+
         do {
             System.out.println("\n=== PRODUCT MENU ===");
             System.out.println("1) Popcorn - $3.00");
@@ -122,33 +140,21 @@ public class TicketSalesModule {
             sc.nextLine();
 
             switch (option) {
-                case 1:
-                    total += 3.00;
-                    System.out.println("Added Popcorn.");
-                    break;
-                case 2:
-                    total += 2.00;
-                    System.out.println("Added Soda.");
-                    break;
-                case 3:
-                    total += 1.50;
-                    System.out.println("Added Candy.");
-                    break;
-                case 4:
-                    total += 3.50;
-                    System.out.println("Added Nachos.");
-                    break;
-                case 0:
-                    break;
-                default:
-                    System.out.println("Invalid option.");
+                case 1 -> { total += 3.00; System.out.println("Added Popcorn."); }
+                case 2 -> { total += 2.00; System.out.println("Added Soda."); }
+                case 3 -> { total += 1.50; System.out.println("Added Candy."); }
+                case 4 -> { total += 3.50; System.out.println("Added Nachos."); }
+                case 0 -> {}
+                default -> System.out.println("Invalid option.");
             }
+
         } while (option != 0);
 
         if (total > 0) {
             Ticket t = new Ticket();
             System.out.println("Enter purchase ID:");
             t.setTicketId(sc.nextLine());
+
             t.setMovieTitle("Snack Purchase");
             t.setPrice(total);
             t.setDate(new Date());
@@ -156,8 +162,7 @@ public class TicketSalesModule {
             t.setPaymentMethod("Cash");
             t.setType("Product");
 
-            tickets[counter] = t;
-            counter++;
+            tickets[counter++] = t;
 
             System.out.println("Total purchase: $" + total);
             System.out.println("Products sold successfully!");
@@ -166,14 +171,15 @@ public class TicketSalesModule {
         }
     }
 
-    /**
-     * Displays all tickets and product sales.
+    /*
+     * Displays the list of stored tickets and product purchases.
      */
     private void ticketList() {
         if (counter == 0) {
             System.out.println("No tickets registered.");
             return;
         }
+
         System.out.println("\n=== TICKET LIST ===");
         for (int i = 0; i < counter; i++) {
             Ticket t = tickets[i];
@@ -185,8 +191,8 @@ public class TicketSalesModule {
         }
     }
 
-    /**
-     * Saves all ticket data to a .txt file.
+    /*
+     * Saves all registered ticket information to a .txt file called <b>tickets.txt</b>.
      */
     private void saveTickets() {
         if (counter == 0) {
@@ -197,7 +203,9 @@ public class TicketSalesModule {
         try {
             FileWriter fileWriter = new FileWriter("tickets.txt");
             PrintWriter printWriter = new PrintWriter(fileWriter);
+
             printWriter.println("=== CINEMA TICKET SALES ===");
+
             for (int i = 0; i < counter; i++) {
                 Ticket t = tickets[i];
                 printWriter.println((i + 1) + ") ID: " + t.getTicketId()
@@ -207,15 +215,17 @@ public class TicketSalesModule {
                         + " | Date: " + t.getDate()
                         + " | Status: " + t.getStatus());
             }
+
             printWriter.close();
             System.out.println("Tickets saved successfully in tickets.txt!");
+
         } catch (IOException e) {
             System.out.println("Error saving tickets: " + e.getMessage());
         }
     }
 
-    /**
-     * Loads and displays tickets from the saved .txt file.
+    /*
+     * Loads ticket records from the saved file <b>tickets.txt</b>.
      */
     private void loadTickets() {
         try {
@@ -227,35 +237,47 @@ public class TicketSalesModule {
 
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
+
             System.out.println("\n=== LOADED TICKET LIST ===");
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
+
             reader.close();
             System.out.println("\nFile loaded successfully!");
+
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
+
+    /*
+     * Adds a new ticket to the array externally.
+     *
+     */
     public void addTicket(Ticket t) {
-    if (counter < tickets.length) {
-        tickets[counter++] = t;
-        System.out.println("Ticket added successfully: " + t.getMovieTitle());
-    } else {
-        System.out.println("No more space for tickets!");
+        if (counter < tickets.length) {
+            tickets[counter++] = t;
+            System.out.println("Ticket added successfully: " + t.getMovieTitle());
+        } else {
+            System.out.println("No more space for tickets!");
+        }
     }
-}
 
+    /*
+     * Saves invoice information into <b>factura.txt.file.
+     *
+     * @param factura Invoice formatted string to store
+     */
     public void saveInvoiceToTxt(String factura) {
-    try {
-        FileWriter fw = new FileWriter("factura.txt", true); // true = append
-        fw.write(factura);
-        fw.write("\n-------------------------------------\n\n");
-        fw.close();
-        System.out.println("Factura guardada como factura.txt");
-    } catch (IOException e) {
-        System.out.println("❌ Error al guardar la factura.");
+        try {
+            FileWriter fw = new FileWriter("factura.txt", true);
+            fw.write(factura);
+            fw.write("\n-------------------------------------\n\n");
+            fw.close();
+            System.out.println("Factura guardada como factura.txt");
+        } catch (IOException e) {
+            System.out.println("❌ Error al guardar la factura.");
+        }
     }
-}
-
 }

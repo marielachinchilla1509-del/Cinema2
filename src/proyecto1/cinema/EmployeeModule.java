@@ -24,7 +24,7 @@ public class EmployeeModule {
         em.showMenu(); /* this is used for show the menu of employee module
         */
     }
-
+// this method create a menu for show the things the you can do in this module
     public void showMenu() {
         
         int option;
@@ -45,22 +45,22 @@ public class EmployeeModule {
             switch(option){
             
                 case 1:
-                    registerEmployee();
+                    registerEmployee();// case 1 is create for register a employee
                     break;
                 case 2:
-                    employeeList();
+                    employeeList();// this case show a employee liss previously registered
                     break;
                 case 3:
-                    searchEmployee();
+                    searchEmployee();// this is used for search an employee for his ID
                     break;
                 case 4:
-                    saveList();
+                    saveList();// save the list in a txt called employee
                     break;
                 case 5:
-                    deleteEmployee();
+                    deleteEmployee();// delete a employee registered and delete by the txt
                     break;
                 case 6:
-                    loadEmploye();
+                    loadEmploye();// load the txt previusly saved by save list
                     break;
                 case 0:
                     System.out.println("Returning to the main module menu...");
@@ -84,6 +84,7 @@ public class EmployeeModule {
            System.out.println("There is not more space for Employee");
            return;
         }
+        // create a new employee
         Employee e = new Employee();
       
         System.out.println("Enter the employee full name ");
@@ -132,6 +133,11 @@ public class EmployeeModule {
             System.out.println("There are not registered employee");
             return;
         }
+        /*
+        this part if used when the user want to see the list, the code make the
+        employee list used a for because we need to see all the registered employee
+        if there is nobody registered, the code will send a message 
+        */
         System.out.println("\n=== Employee List ===");
         for (int i = 0; i < contador; i++) {
             System.out.println((i + 1) + " Name: " + employee[i].getName()
@@ -140,7 +146,11 @@ public class EmployeeModule {
                     + employee[i].getSalary());
         }
     }
-
+    /* method for search an employee by ID, first we used a if and we see if the
+    counter have a employee registered, if the counter ==0 the code will send
+    a message, but if the counter is more than 1, will be ask for the ID
+   
+     */
     private void searchEmployee() {
         if (contador == 0) {
             System.out.println("There are not registered employee");
@@ -154,7 +164,11 @@ public class EmployeeModule {
         *the arrangement is covered to verify that the employee is correctly registered.
         */
         boolean found = false;
-
+        /*
+        we used a boolean and we start saying that is false, after that if 
+        "found" = true the code will show a list used a for with all the information
+        about the employee
+         */
         for (int i = 0; i < contador; i++) {
             if(employee[i].getId().equals(id)){
                     System.out.println("=== Employee found ===");
@@ -170,7 +184,10 @@ public class EmployeeModule {
             }
         }
     }
-
+    /*
+    used for save a list by txt used filewriter, if the counter=0 the code will
+    send a message,but if more than 0, the system will saved the list in a txt
+     */
     private void saveList() {
         if (contador == 0) {
             System.out.println("There are not employee to save");
@@ -242,7 +259,9 @@ public class EmployeeModule {
             }
         }
     }
-
+/*
+    this method load the list previously saved in the method save list
+    */
     private void loadEmploye() {
         try {
             // Create a File object representing the customers.txt file

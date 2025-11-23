@@ -2,22 +2,42 @@ package proyecto1.cinema;
 
 import java.util.Date;
 
+/*
+ * The Person class represents a generic individual within the cinema system.
+ * It provides basic personal information shared by customers and employees.
+ * 
+ * This class functions as a parent class for specialized roles such as
+ * Employee and Customer, allowing common attributes to be reused and reducing
+ * code duplication throughout the project.
+ * 
+ * It stores identification details, personal contact information, and
+ * accessibility indicators.
+ */
 public class Person {
 
+    /* Indicates whether the person has any disability condition. */
     private boolean disability;
 
+    /* Birth date of the person. */
     private Date birthDay;
 
+    /* Email contact address of the person. */
     private String email;
 
+    /* Identification number of the person. */
     private String id;
 
+    /* Full name of the person. */
     private String name;
 
+    /* Phone contact number of the person. */
     private String phoneNumber;
 
-    public Person(boolean disability, Date birthDay, String email, String id, 
-            String name, String phoneNumber) {
+    /*
+     * Constructor used to initialize all information of the person.
+     */
+    public Person(boolean disability, Date birthDay, String email, String id,
+                  String name, String phoneNumber) {
         this.disability = disability;
         this.birthDay = birthDay;
         this.email = email;
@@ -26,15 +46,17 @@ public class Person {
         this.phoneNumber = phoneNumber;
     }
 
+    /*
+     * Default constructor used when no personal information is available.
+     */
     public Person() {
-      boolean disability = false;
-      Date birthday = null;
-      String email= "Not registered";
-      String id = "Not registered";
-      String name = "Not registered ";
-      String phoneNumber = "Not registered";
+        this.disability = false;
+        this.birthDay = null;
+        this.email = "Not registered";
+        this.id = "Not registered";
+        this.name = "Not registered";
+        this.phoneNumber = "Not registered";
     }
-
     public boolean isDisability() {
         return disability;
     }
@@ -83,21 +105,13 @@ public class Person {
         this.phoneNumber = phoneNumber;
     }
 
+    /*
+     * Generates a readable string representation of the person's information.
+     */
     @Override
     public String toString() {
-        return "Person{" + "disability=" + disability + ", birthDay=" + 
+        return "Person{" + "disability=" + disability + ", birthDay=" +
                 birthDay + ", email=" + email + ", id=" + id + ", name=" +
                 name + ", phoneNumber=" + phoneNumber + '}';
     }
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
 }

@@ -1,16 +1,43 @@
 package proyecto1.cinema;
 
+/*
+ * The Product class represents an item available for purchase inside
+ * the cinema, typically including snacks, beverages, or merchandise.
+ *
+ * It contains essential commercial information such as price, stock
+ * quantity, category classification, product code, description, and
+ * availability status.
+ *
+ * This class is used by the sales module to register, modify and
+ * display product information within the system.
+ */
 public class Product {
 
+    /* Price assigned to the product. */
     private double price;
+
+    /* Number of units available in stock. */
     private int stock;
+
+    /* Product category (e.g., food, drink, candy, souvenir). */
     private String category;
+
+    /* Unique identification code for the product. */
     private String code;
+
+    /* Brief description of the product. */
     private String description;
+
+    /* Official commercial name of the product. */
     private String productName;
+
+    /** Availability status (e.g., active, inactive, out of stock). */
     private String status;
 
-    // 🔹 Constructor vacío (ahora sí funcional)
+    /*
+     * Default constructor that initializes product information
+     * with default placeholder values.
+     */
     public Product() {
         this.price = 0.0;
         this.stock = 0;
@@ -21,7 +48,9 @@ public class Product {
         this.status = "";
     }
 
-    // 🔹 Constructor con parámetros
+    /*
+     * Constructor used to define a product with specific parameters.
+     */
     public Product(double price, int stock, String category, String code,
                    String description, String productName, String status) {
         this.price = price;
@@ -33,7 +62,6 @@ public class Product {
         this.status = status;
     }
 
-   
     public double getPrice() {
         return price;
     }
@@ -90,6 +118,9 @@ public class Product {
         this.status = status;
     }
 
+    /*
+     * Returns a formatted string representation of product details.
+     */
     @Override
     public String toString() {
         return "Product{" +
