@@ -46,14 +46,11 @@ public class CustomerUI extends JFrame {
         JButton btnList = createBigButton("📄 Customer List", navyBlue, white);
         JButton btnSearch = createBigButton("🔍 Search Customer", darkGray, white);
         JButton btnSave = createBigButton("💾 Save to TXT", black, white);
-        JButton btnLoad = createBigButton("📁 Load TXT", darkGray, white);
 
         buttonPanel.add(btnRegister);
         buttonPanel.add(btnList);
         buttonPanel.add(btnSearch);
         buttonPanel.add(btnSave);
-        buttonPanel.add(btnLoad);
-
         add(buttonPanel, BorderLayout.CENTER);
 
         // ==== BACK BUTTON ====
@@ -75,7 +72,7 @@ public class CustomerUI extends JFrame {
         btnList.addActionListener(e -> listCustomers());
         btnSearch.addActionListener(e -> openSearchWindow());
         btnSave.addActionListener(e -> openSaveWindow());
-        btnLoad.addActionListener(e -> openLoadWindow());
+        loadDataOnStartup();
     }
 
     private JButton createBigButton(String text, Color bg, Color fg) {
@@ -136,7 +133,8 @@ public class CustomerUI extends JFrame {
         membershipPanel.add(cbMembership);
         membershipPanel.setVisible(false);
 
-        chkVip.addActionListener(e -> membershipPanel.setVisible(chkVip.isSelected()));
+        chkVip.addActionListener(e -> membershipPanel.setVisible(chkVip.
+                isSelected()));
 
         form.add(txtId);
         form.add(txtName);
@@ -167,9 +165,10 @@ public class CustomerUI extends JFrame {
                 return;
             }
 
-            // VALIDACION 2: ID repetido
+            // VALIDACION 2: ID repetido (comprobar solo hasta 'count')
             for (int i = 0; i < count; i++) {
-                if (customers[i].getId().equals(txtId.getText())) {
+                if (customers[i] != null && customers[i].getId().equals(txtId.
+                        getText())) {
                     JOptionPane.showMessageDialog(reg,
                             "❌ ID already exists",
                             "Duplicate ID",
@@ -188,7 +187,8 @@ public class CustomerUI extends JFrame {
             c.setVip(chkVip.isSelected());
 
             if (chkVip.isSelected()) {
-                m.setType(TypeMembership.valueOf(cbMembership.getSelectedItem().toString()));
+                m.setType(TypeMembership.valueOf(cbMembership.getSelectedItem().
+                        toString()));
             } else {
                 m.setType(null);
             }
@@ -244,7 +244,8 @@ public class CustomerUI extends JFrame {
             datos[i][2] = customers[i].getEmail();
             datos[i][3] = customers[i].getPhoneNumber();
             datos[i][4] = String.valueOf(customers[i].isVip());
-            datos[i][5] = memberships[i].getType() != null ? memberships[i].getType().toString() : "None";
+            datos[i][5] = memberships[i].getType() != null
+                    ? memberships[i].getType().toString() : "None";
             datos[i][6] = "🗑️️";
         }
 
@@ -315,7 +316,8 @@ public class CustomerUI extends JFrame {
                 + "Email: " + customers[index].getEmail() + "\n"
                 + "Phone: " + customers[index].getPhoneNumber() + "\n"
                 + "VIP: " + customers[index].isVip() + "\n"
-                + "Membership: " + (memberships[index].getType() != null ? memberships[index].getType() : "None")
+                + "Membership: " + (memberships[index].getType() != null
+                ? memberships[index].getType() : "None")
         );
 
         JScrollPane scroll = new JScrollPane(info);
@@ -369,7 +371,7 @@ public class CustomerUI extends JFrame {
     }
 
     // ============================================================
-    // SAVE / LOAD
+    // SAVE / HELPERS
     // ============================================================
     private void openSaveWindow() {
         JFrame win = new JFrame("💾 Save Customers");
@@ -377,7 +379,8 @@ public class CustomerUI extends JFrame {
         win.setLocationRelativeTo(null);
         win.setLayout(new GridLayout(2, 1, 10, 10));
 
-        JLabel lbl = new JLabel("Save list to customers.txt?", SwingConstants.CENTER);
+        JLabel lbl = new JLabel("Save list to customers.txt?",
+                SwingConstants.CENTER);
         lbl.setFont(new Font("Inter", Font.BOLD, 18));
 
         JButton btn = new JButton("Save");
@@ -393,14 +396,16 @@ public class CustomerUI extends JFrame {
     }
 
     private void saveToTxt() {
-        try (PrintWriter pw = new PrintWriter(new FileWriter("customers.txt", false))) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("customers.txt",
+                false))) {
             for (int i = 0; i < count; i++) {
-                pw.println("ID: " + customers[i].getId());                // ID primero
-                pw.println("Name: " + customers[i].getName());           // Nombre después
+                pw.println("ID: " + customers[i].getId());         // ID primero
+                pw.println("Name: " + customers[i].getName()); // Nombre después
                 pw.println("Email: " + customers[i].getEmail());
                 pw.println("Phone: " + customers[i].getPhoneNumber());
                 pw.println("VIP: " + customers[i].isVip());
-                pw.println("Membership: " + (memberships[i].getType() != null ? memberships[i].getType() : "None"));
+                pw.println("Membership: " + (memberships[i].getType() != null
+                        ? memberships[i].getType() : "None"));
                 pw.println("------------------------------");
             }
         } catch (Exception e) {
@@ -411,12 +416,13 @@ public class CustomerUI extends JFrame {
     private void updateTxtAfterDelete() {
         try (PrintWriter pw = new PrintWriter(new FileWriter("customers.txt", false))) {
             for (int i = 0; i < count; i++) {
-                pw.println("ID: " + customers[i].getId());                // ID primero
-                pw.println("Name: " + customers[i].getName());           // Nombre después
+                pw.println("ID: " + customers[i].getId());        // ID primero
+                pw.println("Name: " + customers[i].getName());   // Nombre después
                 pw.println("Email: " + customers[i].getEmail());
                 pw.println("Phone: " + customers[i].getPhoneNumber());
                 pw.println("VIP: " + customers[i].isVip());
-                pw.println("Membership: " + (memberships[i].getType() != null ? memberships[i].getType() : "None"));
+                pw.println("Membership: " + (memberships[i].getType() != null
+                        ? memberships[i].getType() : "None"));
                 pw.println("------------------------------");
             }
         } catch (Exception e) {
@@ -424,28 +430,10 @@ public class CustomerUI extends JFrame {
         }
     }
 
-    private void openLoadWindow() {
-        JFrame win = new JFrame("📁 Load Customers");
-        win.setSize(400, 200);
-        win.setLocationRelativeTo(null);
-        win.setLayout(new GridLayout(2, 1, 10, 10));
-
-        JLabel lbl = new JLabel("Load customers.txt?", SwingConstants.CENTER);
-        lbl.setFont(new Font("Inter", Font.BOLD, 18));
-
-        JButton btn = new JButton("Load");
-        btn.setFont(new Font("Inter", Font.BOLD, 18));
-        btn.addActionListener(e -> {
-            loadFromTxt();
-            win.dispose();
-        });
-
-        win.add(lbl);
-        win.add(btn);
-        win.setVisible(true);
-    }
-
-    private void loadFromTxt() {
+    /**
+     * Carga automática usada al iniciar el módulo (sin ventana).
+     */
+    private void loadDataOnStartup() {
         try (BufferedReader br = new BufferedReader(new FileReader("customers.txt"))) {
 
             customers = new Customer[200];
@@ -460,10 +448,10 @@ public class CustomerUI extends JFrame {
                 line = line.trim();
                 if (line.startsWith("ID: ")) {
                     c = new Customer();
-                    c.setId(line.substring(4).trim());  // CORREGIDO: 4, no 6
+                    c.setId(line.substring(4).trim());
                 } else if (line.startsWith("Name: ")) {
                     if (c != null) {
-                        c.setName(line.substring(6).trim()); // CORREGIDO: 6, no 4
+                        c.setName(line.substring(6).trim());
                     }
                 } else if (line.startsWith("Email: ")) {
                     if (c != null) {
@@ -481,7 +469,11 @@ public class CustomerUI extends JFrame {
                     m = new Membership();
                     String memType = line.substring(12).trim();
                     if (!memType.equals("None")) {
-                        m.setType(TypeMembership.valueOf(memType));
+                        try {
+                            m.setType(TypeMembership.valueOf(memType));
+                        } catch (IllegalArgumentException ex) {
+                            m.setType(null); // valor no reconocido -> null
+                        }
                     } else {
                         m.setType(null);
                     }
@@ -503,11 +495,11 @@ public class CustomerUI extends JFrame {
                 count++;
             }
 
-            JOptionPane.showMessageDialog(null, "List loaded successfully!");
         } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "No saved customers found.");
+            // No hay archivo guardado: no mostrar error al iniciar
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error loading customers.");
+            // Si algo falla, no rompemos la app al iniciar; mostrar mensaje opcional:
+            JOptionPane.showMessageDialog(null, "Error loading customers on startup.");
         }
     }
 
@@ -522,7 +514,8 @@ public class CustomerUI extends JFrame {
         win.setLayout(new BorderLayout(10, 10));
         win.getContentPane().setBackground(Color.WHITE);
 
-        JLabel header = new JLabel("🔍 Search Customer by ID", SwingConstants.CENTER);
+        JLabel header = new JLabel("🔍 Search Customer by ID",
+                SwingConstants.CENTER);
         header.setFont(new Font("Segoe UI", Font.BOLD, 26));
         header.setOpaque(true);
         header.setBackground(new Color(10, 25, 60));
@@ -566,7 +559,8 @@ public class CustomerUI extends JFrame {
         btnSearch.addActionListener(e -> {
             String id = txtIdSearch.getText().trim();
             if (id.isEmpty()) {
-                JOptionPane.showMessageDialog(win, "Please enter an ID.", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(win, "Please enter an ID.",
+                        "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -579,7 +573,8 @@ public class CustomerUI extends JFrame {
                             + "Email: " + customers[i].getEmail() + "\n"
                             + "Phone: " + customers[i].getPhoneNumber() + "\n"
                             + "VIP: " + customers[i].isVip() + "\n"
-                            + "Membership: " + (memberships[i].getType() != null ? memberships[i].getType() : "None")
+                            + "Membership: " + (memberships[i].getType() != null
+                            ? memberships[i].getType() : "None")
                     );
                     found = true;
                     break;
