@@ -1,4 +1,4 @@
-package ui;
+/*package ui;
 
 import proyecto1.cinema.Product;
 import javax.swing.*;
@@ -37,3 +37,4 @@ public class InventoryProductUI extends JFrame {
         add(btnDelete, BorderLayout.SOUTH);
     }
 }
+*/

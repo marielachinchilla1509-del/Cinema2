@@ -1,0 +1,20 @@
+----------------------------------------
+         🎟  CINEMA INVOICE
+----------------------------------------
+Movie: DOLLHOUSE
+Room: 1
+Seat: 1
+Type: Adult
+Payment: Cash
+Date: 23/11/2025 22:24
+----------------------------------------
+PRICE: $4,50
+TAX (13%): $0,59
+----------------------------------------
+TOTAL: $5,09
+----------------------------------------
+Thank you for your purchase! 🍿
+
+=== SYSTEM GENERATED INVOICE ===
+Generated on: 23/11/2025 22:24:13
+File: C:\Users\kokog\Desktop\repo proyecto\Cinema2\invoice\invoiceticket_20251123_222413.txt

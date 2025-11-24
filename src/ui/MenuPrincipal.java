@@ -4,14 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Main Dashboard for Proyecto1Cinema
- * Redesigned: Large square buttons as main focus
- * Color palette: Navy Blue, Soft Pink, Dark Green, White, Dark Gray
+ * Main Dashboard for Proyecto1Cinema Redesigned: Large square buttons as main
+ * focus Color palette: Navy Blue, Soft Pink, Dark Green, White, Dark Gray
  */
 public class MenuPrincipal extends JFrame {
 
     public MenuPrincipal() {
-        setTitle("Proyecto1Cinema - Main Dashboard");
+        setTitle("CINEMA UCR - Info.Empresarial");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1100, 750);
         setLocationRelativeTo(null);
@@ -19,16 +18,16 @@ public class MenuPrincipal extends JFrame {
 
         // 🎨 Color palette
         Color navyBlue = new Color(15, 32, 62);
-        Color softPink = new Color(255, 182, 193);
-        Color darkGreen = new Color(0, 100, 0);
         Color white = Color.WHITE;
-        Color darkGray = new Color(40, 40, 40);
+        Color darkGray = new Color(45, 45, 45);
+        Color black = Color.BLACK;
+        Color red = new Color(139, 0, 0);
 
         // 🧱 Header
         JPanel header = new JPanel();
         header.setBackground(navyBlue);
         header.setPreferredSize(new Dimension(getWidth(), 80));
-        JLabel title = new JLabel("🎬 Proyecto1Cinema - Main Dashboard", SwingConstants.CENTER);
+        JLabel title = new JLabel("🎬 CINEMA UCR - Info.Empresarial", SwingConstants.CENTER);
         title.setForeground(white);
         title.setFont(new Font("Segoe UI", Font.BOLD, 26));
         header.add(title);
@@ -42,9 +41,9 @@ public class MenuPrincipal extends JFrame {
 
         // 🟦 Buttons
         JButton btnEmployees = createMainButton("Employee Management", navyBlue, white);
-        JButton btnProducts = createMainButton("Product Management", darkGreen, white);
-        JButton btnCustomers = createMainButton("Customer Management", softPink, darkGray);
-        JButton btnTickets = createMainButton("Sales", darkGray, white);
+        JButton btnProducts = createMainButton("Product Management", navyBlue, white);
+        JButton btnCustomers = createMainButton("Customer Management", navyBlue, white);
+        JButton btnTickets = createMainButton("Sales", navyBlue, white);
 
         mainPanel.add(btnEmployees);
         mainPanel.add(btnProducts);
@@ -57,9 +56,9 @@ public class MenuPrincipal extends JFrame {
         JPanel footer = new JPanel();
         footer.setBackground(white);
         JButton btnExit = new JButton("Exit");
-        btnExit.setBackground(new Color(220, 53, 69));
+        btnExit.setBackground(red);
         btnExit.setForeground(white);
-        btnExit.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        btnExit.setFont(new Font("Inter", Font.BOLD, 16));
         btnExit.setFocusPainted(false);
         btnExit.setPreferredSize(new Dimension(180, 50));
         btnExit.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -128,4 +127,3 @@ public class MenuPrincipal extends JFrame {
         });
     }
 }
-

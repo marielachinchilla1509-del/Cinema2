@@ -1,0 +1,20 @@
+----------------------------------------
+         🎟  CINEMA INVOICE
+----------------------------------------
+Movie: NOW YOU SEE ME 3
+Room: 2
+Seat: 1
+Type: Adult
+Payment: Cash
+Date: 23/11/2025 22:11
+----------------------------------------
+PRICE: $4,75
+TAX (13%): $0,62
+----------------------------------------
+TOTAL: $5,37
+----------------------------------------
+Thank you for your purchase! 🍿
+
+=== SYSTEM GENERATED INVOICE ===
+Generated on: 23/11/2025 22:11:45
+File: C:\Users\kokog\Desktop\repo proyecto\Cinema2\invoice\invoiceticket_20251123_221145.txt

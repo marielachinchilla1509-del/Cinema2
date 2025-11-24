@@ -24,8 +24,7 @@ public class CustomerUI extends JFrame {
         getContentPane().setBackground(Color.WHITE);
 
         // ==== COLORS ====
-        Color red = new Color(200, 30, 30);
-        Color darkGray = new Color(45, 45, 45);
+        Color red = new Color(139, 0, 0);
         Color navyBlue = new Color(10, 25, 60);
         Color black = new Color(0, 0, 0);
         Color white = Color.WHITE;
@@ -42,10 +41,10 @@ public class CustomerUI extends JFrame {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
         buttonPanel.setBackground(white);
 
-        JButton btnRegister = createBigButton("👤 Register Customer", red, white);
+        JButton btnRegister = createBigButton("👤 Register Customer", navyBlue, white);
         JButton btnList = createBigButton("📄 Customer List", navyBlue, white);
-        JButton btnSearch = createBigButton("🔍 Search Customer", darkGray, white);
-        JButton btnSave = createBigButton("💾 Save to TXT", black, white);
+        JButton btnSearch = createBigButton("🔍 Search Customer", navyBlue, white);
+        JButton btnSave = createBigButton("💾 Save to TXT", navyBlue, white);
 
         buttonPanel.add(btnRegister);
         buttonPanel.add(btnList);
@@ -58,9 +57,9 @@ public class CustomerUI extends JFrame {
         backPanel.setBackground(white);
 
         JButton btnBack = new JButton("⬅️ Back to Menu");
-        btnBack.setFont(new Font("Inter", Font.PLAIN, 16));
-        btnBack.setBackground(Color.LIGHT_GRAY);
-        btnBack.setForeground(Color.BLACK);
+        btnBack.setFont(new Font("Inter", Font.BOLD, 16));
+        btnBack.setBackground(red);
+        btnBack.setForeground(white);
         btnBack.setFocusPainted(false);
         btnBack.addActionListener(e -> dispose());
 

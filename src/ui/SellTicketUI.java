@@ -201,7 +201,7 @@ public class SellTicketUI extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // ===== SAVE INVOICE BUTTON =====
-        JButton btnSaveInvoice = new JButton("💾 Save Invoice to File");
+        JButton btnSaveInvoice = new JButton("Print Invoice");
         btnSaveInvoice.setBackground(new Color(0x228B22));
         btnSaveInvoice.setForeground(Color.WHITE);
         btnSaveInvoice.setFont(new Font("Segoe UI", Font.BOLD, 14));

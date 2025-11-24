@@ -1,3 +1,4 @@
+/*
 package ui;
 
 import javax.swing.*;
@@ -5,11 +6,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-/**
+
  * ProductEditUI (UI-only)
  * Versión estética simplificada: layout y estilos similares al HTML que pasaste.
  * No tiene integración con modelos ni almacenamiento — solo apariencia y placeholders.
- */
+ 
 public class EditProductUI extends JFrame {
 
     // Campos UI (visibles para que luego agregues lógica)
@@ -233,3 +234,4 @@ public class EditProductUI extends JFrame {
         SwingUtilities.invokeLater(EditProductUI::new);
     }
 }
+*/

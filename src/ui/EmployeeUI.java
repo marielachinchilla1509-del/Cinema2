@@ -21,8 +21,7 @@ public class EmployeeUI extends JFrame {
         getContentPane().setBackground(Color.WHITE);
 
         // ==== COLORS ====
-        Color red = new Color(200, 30, 30);
-        Color darkGray = new Color(45, 45, 45);
+        Color red = new Color(139, 0, 0);
         Color navyBlue = new Color(10, 25, 60);
         Color black = new Color(0, 0, 0);
         Color white = Color.WHITE;
@@ -39,11 +38,11 @@ public class EmployeeUI extends JFrame {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
         buttonPanel.setBackground(white);
 
-        JButton btnRegister = createBigButton("➕ Register Employee", red, white);
-        JButton btnSearch = createBigButton("🔍 Search Employee", darkGray, white);
+        JButton btnRegister = createBigButton("➕ Register Employee", navyBlue, white);
+        JButton btnSearch = createBigButton("🔍 Search Employee", navyBlue, white);
         JButton btnList = createBigButton("📄 Employee List", navyBlue, white);
-        JButton btnSave = createBigButton("💾 Save to TXT", black, white);
-        JButton btnLoad = createBigButton("📁 Load TXT", darkGray, white);
+        JButton btnSave = createBigButton("💾 Save to TXT", navyBlue, white);
+        JButton btnLoad = createBigButton("📁 Load TXT", navyBlue, white);
         JButton btnDelete = createBigButton("🗑 Delete Employee", red, white);
 
         buttonPanel.add(btnRegister);
@@ -59,9 +58,9 @@ public class EmployeeUI extends JFrame {
         backPanel.setBackground(white);
 
         JButton btnBack = new JButton("⬅️ Back to Menu");
-        btnBack.setFont(new Font("Inter", Font.PLAIN, 16));
-        btnBack.setBackground(Color.LIGHT_GRAY);
-        btnBack.setForeground(Color.BLACK);
+        btnBack.setFont(new Font("Inter", Font.BOLD, 16));
+        btnBack.setBackground(red);
+        btnBack.setForeground(Color.WHITE);
         btnBack.setPreferredSize(new Dimension(180, 40));
         btnBack.addActionListener(e -> dispose());
         backPanel.add(btnBack);

@@ -20,7 +20,7 @@ public class TicketSalesUI extends JFrame {
         getContentPane().setBackground(Color.WHITE);
 
         // ==== COLORS ====
-        Color red = new Color(200, 30, 30);
+        Color red = new Color(139, 0, 0);
         Color darkGray = new Color(45, 45, 45);
         Color navyBlue = new Color(10, 25, 60);
         Color black = new Color(0, 0, 0);
@@ -38,10 +38,10 @@ public class TicketSalesUI extends JFrame {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
         buttonPanel.setBackground(white);
 
-        JButton btnSellTicket = createBigButton("🎬 Sell Ticket", red, white);
+        JButton btnSellTicket = createBigButton("🎬 Sell Ticket", navyBlue, white);
         JButton btnSellProduct = createBigButton("🍿 Sell Product", navyBlue, white);
-        JButton btnInvoiceList = createBigButton("📋 Invoice List", darkGray, white);
-        JButton btnProductList = createBigButton("📦 Product List", black, white);
+        JButton btnInvoiceList = createBigButton("📋 Invoice List", navyBlue, white);
+        JButton btnProductList = createBigButton("📦 Product List", navyBlue, white);
 
         buttonPanel.add(btnSellTicket);
         buttonPanel.add(btnSellProduct);
@@ -55,9 +55,9 @@ public class TicketSalesUI extends JFrame {
         backPanel.setBackground(white);
 
         JButton btnBack = new JButton("⬅️ Back to Main Menu");
-        btnBack.setFont(new Font("Inter", Font.PLAIN, 16));
-        btnBack.setBackground(Color.LIGHT_GRAY);
-        btnBack.setForeground(Color.BLACK);
+        btnBack.setFont(new Font("Inter", Font.BOLD, 16));
+        btnBack.setBackground(red);
+        btnBack.setForeground(white);
         btnBack.setFocusPainted(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnBack.setPreferredSize(new Dimension(180, 40));
