@@ -1,1 +1,4 @@
-coca;Soda;jijija;6562;2;200.0;Active
+Dulsoso;Snack;Dulce;1111;216;50.0;Active
+Pan de coca;Snack;pandecoca;5421;3;100.0;Active
+Cebolla;Food;vegetal;1010;0;10.0;Active
+Coca;Soda;soda;5050;2;5.0;Active

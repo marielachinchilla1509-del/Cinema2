@@ -1,18 +1,19 @@
 ----------------------------------------
-     🍫 CINEMA INVOICE
+      🍫 CINEMA INVOICE
 ----------------------------------------
-Invoice ID: P1764017962273
+Client: Carolina
+Invoice ID: P1764043541701
 Purchase: Snack Products
-Date: 24/11/2025 14:59
+Date: 24/11/2025 22:05
 Payment: Cash
 ----------------------------------------
 Products Sold:
-  CocaCola ($10,00)
+  - 1 x Pan de coca          @ $100,00
 ----------------------------------------
-SUBTOTAL: $10,00
-TAX (13%): $1,30
+SUBTOTAL: $100,00
+TAX (13%): $13,00
 ----------------------------------------
-TOTAL: $11,30
+TOTAL: $113,00
 
 ----------------------------------------
 Thank you for your purchase! 🍿

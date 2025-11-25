@@ -1,0 +1,23 @@
+----------------------------------------
+      🎟 CINEMA INVOICE
+----------------------------------------
+Client: Carolina
+Client ID: 605010584
+Date: 24/11/2025 22:14
+----------------------------------------
+Movie: NOW YOU SEE ME 3
+Room: 3
+Type: Adult
+Seats (1): A1
+Payment: Cash
+Base Price (per ticket): $4,75
+----------------------------------------
+SUBTOTAL (Before Discount): $4,75
+DISCOUNT: $0,00
+----------------------------------------
+SUBTOTAL (After Discount): $4,75
+TAX (13%): $0,62
+----------------------------------------
+TOTAL: $5,37
+----------------------------------------
+Thank you for your purchase! 🍿

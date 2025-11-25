@@ -1,18 +1,21 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.Vector;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 public class ProductUI extends JFrame {
 
-    // Se hace estática para que otras clases como SellProductUI puedan acceder a ella.
-    private static ArrayList<Product> products = new ArrayList<>();
+    private static final String PRODUCT_FILE = "products.txt";
 
+    // *************************************************************************
+    // --- CONSTRUCTOR PRINCIPAL (ProductUI) ---
+    // *************************************************************************
     public ProductUI() {
-        // ... (Tu código original de ProductUI aquí, sin cambios en esta parte)
+        
         setTitle("🛒 Product Module");
         setSize(1000, 650);
         setLocationRelativeTo(null);
@@ -20,32 +23,34 @@ public class ProductUI extends JFrame {
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.WHITE);
 
-        // ==== COLORS ====
         Color red = new Color(139, 0, 0);
         Color navyBlue = new Color(10, 25, 60);
         Color black = new Color(0, 0, 0);
         Color white = Color.WHITE;
 
-        // ==== TITLE ====
         JLabel title = new JLabel("🛒 Product Module", SwingConstants.CENTER);
         title.setFont(new Font("Inter", Font.BOLD, 36));
         title.setForeground(black);
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         add(title, BorderLayout.NORTH);
 
-        // ==== BUTTON PANEL ====
-        // Cambiado el GridLayout para ajustarse a los 4 botones restantes
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 30, 30)); 
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 30, 30));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
         buttonPanel.setBackground(white);
 
         JButton btnRegister = createBigButton("➕ Register Product", navyBlue, white);
         JButton btnInventory = createBigButton("📦 View Inventory", navyBlue, white);
-        JButton btnSave = createBigButton("💾 Save Products", navyBlue, white);
-        // ELIMINADO: JButton btnLoad = createBigButton("📁 Load Products", navyBlue, white); 
+        JButton btnSave = createBigButton("💾 Save Products (No-Op)", navyBlue, white);
+        JButton btnProductList = createBigButton("🧾 View Product Invoices", navyBlue, white);
         
-        //footer back to menu btn
-        
+        buttonPanel.add(btnRegister);
+        buttonPanel.add(btnInventory);
+        buttonPanel.add(btnSave);
+        buttonPanel.add(btnProductList);
+        buttonPanel.add(new JPanel() {{ setBackground(white); }});
+
+        add(buttonPanel, BorderLayout.CENTER);
+
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         backPanel.setBackground(white);
 
@@ -59,402 +64,232 @@ public class ProductUI extends JFrame {
         backPanel.add(btnBack);
         add(backPanel, BorderLayout.SOUTH);
         
-        // add buttons
-        buttonPanel.add(btnRegister);
-        buttonPanel.add(btnInventory);
-        buttonPanel.add(btnSave);
-        // El cuarto botón que rellena el espacio dejado por 'Load'
-        JButton btnProductList = createBigButton("🧾 View Product Invoices", navyBlue, white); 
-        buttonPanel.add(btnProductList); 
+        btnRegister.addActionListener(e -> new RegisterProductUI());
+        btnInventory.addActionListener(e -> new InventoryProductUI());
+        btnSave.addActionListener(e -> JOptionPane.showMessageDialog(this, 
+                "Products are saved automatically upon registration and deletion/sale.", 
+                "Info", JOptionPane.INFORMATION_MESSAGE)); 
+        btnProductList.addActionListener(e -> new ProductListUI().setVisible(true));
         
-        // Se añade un botón vacío para completar la cuadrícula si es necesario, o se ajusta la cuadrícula a 2x2. 
-        // He optado por el 3x2 original y dejar el espacio vacío (se podría ajustar a 2x2 o 3x2).
-        buttonPanel.add(new JPanel() {{ setBackground(white); }});
-
-        add(buttonPanel, BorderLayout.CENTER);
-
-        // ---- ACTIONS ----
-        btnRegister.addActionListener(e -> new RegisterProductUI(products));
-        // Se mantiene la creación de InventoryProductUI con la lista estática
-        btnInventory.addActionListener(e -> new InventoryProductUI()); 
-        btnSave.addActionListener(e -> saveProducts());
-        // ELIMINADO: btnLoad.addActionListener(e -> loadProducts());
-        // Lanza el nuevo ProductListUI
-        btnProductList.addActionListener(e -> new ProductListUI().setVisible(true)); 
-
         setVisible(true);
     }
+    
+    // *************************************************************************
+    // --- MÉTODOS DE ARCHIVO (SIN ARRAYLIST) ---
+    // *************************************************************************
 
-    // ======================================================================================
-    // BUTTON DESIGN LIKE EMPLOYEE UI
-    // ======================================================================================
-    private JButton createBigButton(String text, Color bg, Color fg) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Inter", Font.BOLD, 22));
-        button.setBackground(bg);
-        button.setForeground(fg);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
-        button.setPreferredSize(new Dimension(350, 120));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setOpaque(true);
-        button.setBorderPainted(false);
-
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override public void mouseEntered(java.awt.event.MouseEvent e)
-            { button.setBackground(bg.darker()); }
-            @Override public void mouseExited(java.awt.event.MouseEvent e)
-            { button.setBackground(bg); }
-        });
-
-        return button;
+    /**
+     * Lee todos los productos del archivo de texto.
+     * @return Vector<Product> La lista de productos leídos.
+     */
+    public static Vector<Product> readAllProductsFromFile() {
+        Vector<Product> productsList = new Vector<>();
+        File file = new File(PRODUCT_FILE);
+        if (!file.exists()) {
+            return productsList;
+        }
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] p = line.split(";");
+                if (p.length == 7) {
+                    productsList.add(new Product(
+                        p[0], p[1], p[2], p[3],
+                        Integer.parseInt(p[4]),
+                        Double.parseDouble(p[5]),
+                        p[6]
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error loading products from file: " + e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        return productsList;
     }
 
-    // ======================================================================================
-    // PRODUCT CLASS
-    // ======================================================================================
-    public static class Product implements Serializable { 
+    /**
+     * Guarda UN ÚNICO producto al final del archivo (modo APPEND).
+     */
+    public static void appendProductToFile(Product p) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PRODUCT_FILE, true))) {
+            bw.write(p.toString());
+            bw.newLine();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error appending product to file: " + e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Reescribe el archivo con la lista de productos proporcionada (público para SellProductUI).
+     */
+    public static void writeAllProductsToFile(Vector<Product> productsList) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(PRODUCT_FILE))) {
+            for (Product p : productsList) {
+                pw.println(p.toString());
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error rewriting product file: " + e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    // *************************************************************************
+    // --- GETTERS y MAIN (para compatibilidad de llamada) ---
+    // *************************************************************************
+    
+    public static Vector<Product> getProducts() {
+        return readAllProductsFromFile();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ProductUI());
+    }
+
+    // *************************************************************************
+    // --- CLASE INTERNA: Product ---
+    // *************************************************************************
+    public static class Product implements Serializable {
         String name, category, desc, code, status;
         int stock;
         double price;
 
         public Product(String n, String c, String d, String co, int s, double p, String st) {
-            this.name = n;
-            this.category = c;
-            this.desc = d;
-            this.code = co;
-            this.stock = s;
-            this.price = p;
-            this.status = st;
+            this.name = n; this.category = c; this.desc = d; this.code = co;
+            this.stock = s; this.price = p; this.status = st;
         }
         
-        // Constructor alternativo para simplificar la creación desde SellProductUI
-        public Product(String n, String co, double p) { 
-            this.name = n;
-            this.code = co;
-            this.price = p;
-            this.category = "Sales";
-            this.desc = "Quick Sale Product";
-            this.stock = 1;
-            this.status = "Active";
-        }
-        
-        // Getters para acceder a los datos
         public String getName() { return name; }
         public String getCategory() { return category; }
+        public String getDesc() { return desc; }
         public String getCode() { return code; }
         public int getStock() { return stock; }
         public double getPrice() { return price; }
         public String getStatus() { return status; }
-
+        
+        public void setStock(int newStock) { this.stock = newStock; }
 
         @Override
         public String toString() {
-            // Se elimina 'desc' al guardar para que la carga no falle si no se usa
             return name + ";" + category + ";" + desc + ";" + code + ";" +
                     stock + ";" + price + ";" + status;
         }
-
-        String getDesc() {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
-
-        void setStock(int i) {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        }
     }
 
-    // ======================================================================================
-    // REGISTER PRODUCT
-    // ======================================================================================
-    public class RegisterProductUI extends JFrame {
-
-        private ArrayList<Product> products; 
-
-        public RegisterProductUI(ArrayList<Product> products) {
-
-            this.products = products;
-            
-            // ... (Tu código original de RegisterProductUI aquí)
-            setTitle("🛒 Register Product");
-            setSize(500, 650);
-            setLocationRelativeTo(null);
-            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            setLayout(new BorderLayout(10, 10));
+    // *************************************************************************
+    // --- CLASES INTERNAS: RegisterProductUI, InventoryProductUI, ProductListUI ---
+    // *************************************************************************
+    
+    public class RegisterProductUI extends JFrame { 
+        public RegisterProductUI() {
+            setTitle("🛒 Register Product"); setSize(500, 650); setLocationRelativeTo(null);
+            setDefaultCloseOperation(DISPOSE_ON_CLOSE); setLayout(new BorderLayout(10, 10));
             getContentPane().setBackground(Color.WHITE);
-
-            Color navy = new Color(0x001F3F);
-            Color red = new Color(0xB22222);
-
-            // ---------- HEADER ----------
+            Color navy = new Color(0x001F3F); Color red = new Color(0xB22222);
             JLabel header = new JLabel("🛒 Register Product", SwingConstants.CENTER);
-            header.setFont(new Font("Segoe UI", Font.BOLD, 26));
-            header.setOpaque(true);
-            header.setBackground(navy);
-            header.setForeground(Color.WHITE);
-            header.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
-            add(header, BorderLayout.NORTH);
-
-            // ---------- FORM ----------
+            header.setFont(new Font("Segoe UI", Font.BOLD, 26)); header.setOpaque(true);
+            header.setBackground(navy); header.setForeground(Color.WHITE);
+            header.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0)); add(header, BorderLayout.NORTH);
             JPanel form = new JPanel(new GridLayout(8, 1, 10, 10));
-            form.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-            form.setBackground(Color.WHITE);
-
-            JTextField txtName = createField("Name");
-            JTextField txtDesc = createField("Description");
-            JTextField txtCode = createField("Code");
-            JTextField txtStock = createField("Stock");
-            JTextField txtPrice = createField("Price");
-            JTextField txtStatus = createField("Status");
-            txtStatus.setText("Active");
-
-            JComboBox<String> cbCategory = new JComboBox<>(new String[]{
-                        "Food", "Snack", "Candy", "Soda"
-            });
+            form.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40)); form.setBackground(Color.WHITE);
+            JTextField txtName = createField("Name"); JTextField txtDesc = createField("Description");
+            JTextField txtCode = createField("Code"); JTextField txtStock = createField("Stock");
+            JTextField txtPrice = createField("Price"); JTextField txtStatus = createField("Status");
+            txtStatus.setText("Active"); txtStock.setText("0"); txtPrice.setText("0.0");
+            JComboBox<String> cbCategory = new JComboBox<>(new String[]{ "Food", "Snack", "Candy", "Soda" });
             cbCategory.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-
-            JPanel categoryPanel = new JPanel(new GridLayout(1, 1));
-            categoryPanel.setBackground(Color.WHITE);
-            categoryPanel.setBorder(BorderFactory.createTitledBorder("Category"));
-            categoryPanel.add(cbCategory);
-
-            form.add(txtName);
-            form.add(categoryPanel);
-            form.add(txtDesc);
-            form.add(txtCode);
-            form.add(txtStock);
-            form.add(txtPrice);
-            form.add(txtStatus);
-
-            add(form, BorderLayout.CENTER);
-
-            // ---------- BUTTON ----------
+            JPanel categoryPanel = new JPanel(new GridLayout(1, 1)); categoryPanel.setBackground(Color.WHITE);
+            categoryPanel.setBorder(BorderFactory.createTitledBorder("Category")); categoryPanel.add(cbCategory);
+            form.add(txtName); form.add(categoryPanel); form.add(txtDesc); form.add(txtCode);
+            form.add(txtStock); form.add(txtPrice); form.add(txtStatus); add(form, BorderLayout.CENTER);
             JButton btnSave = new JButton("💾 Save Product");
-            btnSave.setFont(new Font("Segoe UI", Font.BOLD, 20));
-            btnSave.setBackground(red);
+            btnSave.setFont(new Font("Segoe UI", Font.BOLD, 20)); btnSave.setBackground(red);
             btnSave.setForeground(Color.WHITE);
-
             btnSave.addActionListener(e -> {
-
+                if (txtName.getText().trim().isEmpty() || txtCode.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Name and Code are mandatory.", "Error", JOptionPane.ERROR_MESSAGE); return;
+                }
                 try {
-                    Product p = new Product(
-                                txtName.getText(),
-                                (String) cbCategory.getSelectedItem(),
-                                txtDesc.getText(),
-                                txtCode.getText(),
-                                Integer.parseInt(txtStock.getText()),
-                                Double.parseDouble(txtPrice.getText()),
-                                txtStatus.getText()
-                    );
-
-                    products.add(p);
-
-                    JOptionPane.showMessageDialog(this,
-                            "✅ Product registered!");
-
-                    dispose();
-
+                    Product p = new Product(txtName.getText(), (String) cbCategory.getSelectedItem(), txtDesc.getText(), txtCode.getText(), Integer.parseInt(txtStock.getText()), Double.parseDouble(txtPrice.getText()), txtStatus.getText());
+                    ProductUI.appendProductToFile(p);
+                    JOptionPane.showMessageDialog(this, "✅ Product registered and saved!"); dispose();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "❌ Error: Stock and Price must be valid numbers.", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this,
-                            "❌ Error: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-
-            });
-
-            JPanel bottom = new JPanel();
-            bottom.setBackground(Color.WHITE);
-            bottom.add(btnSave);
-            add(bottom, BorderLayout.SOUTH);
-
-            setVisible(true);
-        }
-
-        private JTextField createField(String placeholder) {
-            JTextField tf = new JTextField();
-            tf.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-            tf.setBorder(BorderFactory.createTitledBorder(placeholder));
-            return tf;
-        }
-    }
-
-    // =========================================================================
-    // INVENTORY SCREEN
-    // Se ha cambiado para usar la lista estática
-    // =========================================================================
-    public class InventoryProductUI extends JFrame {
-
-        public InventoryProductUI() {
-
-            setTitle("📦 Product Inventory");
-            setSize(750, 500);
-            setLocationRelativeTo(null);
-            setLayout(new BorderLayout(10, 10));
-
-            // ======== TÍTULO =========
-            JLabel title = new JLabel("📦 Product Inventory", SwingConstants.CENTER);
-            title.setFont(new Font("Segoe UI", Font.BOLD, 26));
-            title.setOpaque(true);
-            title.setBackground(new Color(10, 25, 60));
-            title.setForeground(Color.WHITE);
-            title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-            add(title, BorderLayout.NORTH);
-
-            // ======== COLUMNAS =========
-            String[] columnas = {
-                    "Name", "Category", "Code", "Stock", "Price", "Status", "Delete"
-            };
-
-            // ======== DATA =========
-            // Ahora usa la lista estática products
-            String[][] datos = new String[products.size()][7]; 
-
-            for (int i = 0; i < products.size(); i++) {
-                Product p = products.get(i);
-                datos[i][0] = p.name;
-                datos[i][1] = p.category;
-                datos[i][2] = p.code;
-                datos[i][3] = String.valueOf(p.stock);
-                datos[i][4] = "$" + p.price;
-                datos[i][5] = p.status;
-                datos[i][6] = "🗑️";  // Icono delete
-            }
-
-            JTable table = new JTable(datos, columnas) {
-                @Override
-                public boolean isCellEditable(int row, int col) {
-                    return col == 6; // Solo delete editable
-                }
-            };
-
-            table.setFont(new Font("Inter", Font.PLAIN, 15));
-            table.setRowHeight(30);
-            table.getTableHeader().setFont(new Font("Inter", Font.BOLD, 16));
-
-            JScrollPane scroll = new JScrollPane(table);
-            scroll.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            add(scroll, BorderLayout.CENTER);
-
-            // ======== CLICK EN ELIMINAR =========
-            table.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-
-                    int row = table.rowAtPoint(e.getPoint());
-                    int col = table.columnAtPoint(e.getPoint());
-
-                    if (col == 6) { // eliminar
-
-                        int confirm = JOptionPane.showConfirmDialog(
-                                        null,
-                                        "Delete this product?",
-                                        "Confirm Delete",
-                                        JOptionPane.YES_NO_OPTION
-                        );
-
-                        if (confirm == JOptionPane.YES_OPTION) {
-
-                            deleteProduct(row);  // ← FUNCIÓN DENTRO DEL MÓDULO
-                            dispose();           // refrescar ventana
-                            new InventoryProductUI();
-                        }
-                    }
+                    JOptionPane.showMessageDialog(this, "❌ Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
-
-            // ======== BOTÓN CERRAR =========
-            JButton btnClose = new JButton("Close");
-            btnClose.setFont(new Font("Inter", Font.BOLD, 18));
-            btnClose.addActionListener(e -> dispose());
-
-            JPanel bottom = new JPanel();
-            bottom.add(btnClose);
-            add(bottom, BorderLayout.SOUTH);
-
+            JPanel bottom = new JPanel(); bottom.setBackground(Color.WHITE); bottom.add(btnSave); add(bottom, BorderLayout.SOUTH);
             setVisible(true);
         }
-
-        // ===========================================================
-        //    FUNCIÓN DELETE *DENTRO DEL INVENTORY*, IGUAL QUE CUSTOMER
-        // ===========================================================
-        private void deleteProduct(int index) {
-
-            // 1. Eliminar del ArrayList
-            products.remove(index);
-
-            // 2. Guardar Cambios en TXT
-            saveProductsToFile();
-        }
-
-        // ===========================================================
-        //    GUARDAR TXT (REESCRIBE COMPLETO)
-        // ===========================================================
-        private void saveProductsToFile() {
-            try (PrintWriter pw = new PrintWriter(new FileWriter("products.txt"))) {
-
-                for (Product p : products) {
-                    // El formato de guardado es diferente al toString(), se unifica al toString() para ser consistente
-                    pw.println(p.toString());
-                }
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null,
-                        "Error saving products: " + e.getMessage());
-            }
-        }
-    }
-
-
-    // ======================================================================================
-    // SAVE & AUTOMATIC LOAD (Modified)
-    // ======================================================================================
-    private void saveProducts() {
-        try (PrintWriter pw = new PrintWriter(new FileWriter("products.txt"))) {
-            for (Product p : products) pw.println(p.toString());
-            JOptionPane.showMessageDialog(this, "Products saved successfully!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error saving file.");
-        }
-    }
-
-    /**
-     * Carga los productos desde el archivo products.txt.
-     * Este método ya no es un Listener de botón, sino que se llama automáticamente.
-     * @param productsList La lista estática de productos a rellenar.
-     */
-    public static void loadProductsFromFile(ArrayList<Product> productsList) {
-        try (BufferedReader br = new BufferedReader(new FileReader("products.txt"))) {
-            productsList.clear();
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] p = line.split(";");
-                // Asegúrate que el formato de carga sea compatible con el toString() y constructor
-                productsList.add(new Product(
-                        p[0], p[1], p[2], p[3],
-                        Integer.parseInt(p[4]),
-                        Double.parseDouble(p[5]),
-                        p[6]
-                ));
-            }
-            // Eliminado el JOptionPane.showMessageDialog(this, "Products loaded!") para la carga automática
-        } catch (FileNotFoundException e) {
-            // No se muestra error si el archivo no existe (primera ejecución)
-            System.out.println("products.txt not found. Starting with empty list.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error loading file: " + e.getMessage());
+         private JTextField createField(String placeholder) {
+            JTextField tf = new JTextField(); tf.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            tf.setBorder(BorderFactory.createTitledBorder(placeholder)); return tf;
         }
     }
     
-    // Método estático para que SellProductUI pueda acceder a la lista de productos
-    public static ArrayList<Product> getProducts() {
-        return products;
+    public class InventoryProductUI extends JFrame { 
+        public InventoryProductUI() {
+            setTitle("📦 Product Inventory"); setSize(750, 500); setLocationRelativeTo(null);
+            setLayout(new BorderLayout(10, 10));
+            JLabel title = new JLabel("📦 Product Inventory", SwingConstants.CENTER);
+            title.setFont(new Font("Segoe UI", Font.BOLD, 26)); title.setOpaque(true);
+            title.setBackground(new Color(10, 25, 60)); title.setForeground(Color.WHITE);
+            title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); add(title, BorderLayout.NORTH);
+            String[] columnas = { "Name", "Category", "Code", "Stock", "Price", "Status", "Delete" };
+            Vector<Product> products = ProductUI.readAllProductsFromFile();
+            DefaultTableModel model = new DefaultTableModel(columnas, 0) {
+                 @Override public boolean isCellEditable(int row, int col) { return col == 6; }
+            };
+            for (Product p : products) {
+                model.addRow(new Object[]{ p.name, p.category, p.code, p.stock, "$" + String.format("%.2f", p.price), p.status, "🗑️" });
+            }
+            JTable table = new JTable(model); table.setFont(new Font("Inter", Font.PLAIN, 15));
+            table.setRowHeight(30); table.getTableHeader().setFont(new Font("Inter", Font.BOLD, 16));
+            JScrollPane scroll = new JScrollPane(table); scroll.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            add(scroll, BorderLayout.CENTER);
+            table.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override public void mouseClicked(java.awt.event.MouseEvent e) {
+                    int row = table.rowAtPoint(e.getPoint()); int col = table.columnAtPoint(e.getPoint());
+                    if (row >= 0 && col == 6) {
+                        String productName = (String) table.getValueAt(row, 0);
+                        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete product: " + productName + "?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                        if (confirm == JOptionPane.YES_OPTION) { deleteProduct(products, row); dispose(); new InventoryProductUI(); }
+                    }
+                }
+            });
+            JButton btnClose = new JButton("Close"); btnClose.setFont(new Font("Inter", Font.BOLD, 18));
+            btnClose.addActionListener(e -> dispose());
+            JPanel bottom = new JPanel(); bottom.add(btnClose); add(bottom, BorderLayout.SOUTH);
+            setVisible(true);
+        }
+        private void deleteProduct(Vector<Product> currentProducts, int index) {
+            currentProducts.remove(index);
+            ProductUI.writeAllProductsToFile(currentProducts);
+        }
+    }
+    
+    public class ProductListUI extends JFrame { 
+        public ProductListUI() {
+             setTitle("🧾 Product Invoices List"); setSize(500, 400); setLocationRelativeTo(null);
+             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+             JLabel label = new JLabel("Invoices list module is not implemented yet.", SwingConstants.CENTER);
+             label.setFont(new Font("Segoe UI", Font.ITALIC, 18)); add(label, BorderLayout.CENTER);
+        }
     }
 
-
-    public static void main(String[] args) {
-        // Carga los productos automáticamente antes de crear la interfaz
-        loadProductsFromFile(products); 
-        // Solo se crea una instancia del UI
-        new ProductUI(); 
+    private JButton createBigButton(String text, Color bg, Color fg) {
+        JButton button = new JButton(text); button.setFont(new Font("Inter", Font.BOLD, 22));
+        button.setBackground(bg); button.setForeground(fg); button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
+        button.setPreferredSize(new Dimension(350, 120));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setOpaque(true); button.setBorderPainted(false);
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseEntered(java.awt.event.MouseEvent e) { button.setBackground(bg.darker()); }
+            @Override public void mouseExited(java.awt.event.MouseEvent e) { button.setBackground(bg); }
+        }); return button;
     }
 }

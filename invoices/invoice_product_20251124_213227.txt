@@ -1,18 +1,19 @@
 ----------------------------------------
-     🍫 CINEMA INVOICE
+      🍫 CINEMA INVOICE
 ----------------------------------------
-Invoice ID: P1764017614437
+Client: Carolina
+Invoice ID: P1764041547455
 Purchase: Snack Products
-Date: 24/11/2025 14:53
+Date: 24/11/2025 21:32
 Payment: Cash
 ----------------------------------------
 Products Sold:
-  CocaCola ($750,00)
+  - 2 x Cebolla              @ $10,00
 ----------------------------------------
-SUBTOTAL: $750,00
-TAX (13%): $97,50
+SUBTOTAL: $20,00
+TAX (13%): $2,60
 ----------------------------------------
-TOTAL: $847,50
+TOTAL: $22,60
 
 ----------------------------------------
 Thank you for your purchase! 🍿

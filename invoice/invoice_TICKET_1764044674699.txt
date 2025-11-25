@@ -1,0 +1,20 @@
+----------------------------------------
+      🎟 CINEMA UCR - Info. Empresarial
+----------------------------------------
+Client: Carolina
+Client ID: 605010584
+Date: 24/11/2025 22:24
+----------------------------------------
+Movie: THE CONJURING
+Location: Auditorio Ssur
+Ticket Type: General
+Seat: M12
+Payment: Cash
+Base Price: $5,00
+----------------------------------------
+SUBTOTAL: $5,00
+TAX (13%): $0,65
+----------------------------------------
+TOTAL: $5,65
+----------------------------------------
+Thank you for your purchase! 🍿

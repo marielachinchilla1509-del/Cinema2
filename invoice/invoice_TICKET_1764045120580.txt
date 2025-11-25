@@ -1,0 +1,20 @@
+----------------------------------------
+      🎟 CINEMA UCR - Info. Empresarial
+----------------------------------------
+Client: Carolina
+Client ID: 605010584
+Date: 24/11/2025 22:32
+----------------------------------------
+Movie: HARRY POTTER
+Location: Auditorio Ssur
+Ticket Type: General
+Seat: A2
+Payment: Cash
+Base Price: $6,00
+----------------------------------------
+SUBTOTAL: $6,00
+TAX (13%): $0,78
+----------------------------------------
+TOTAL: $6,78
+----------------------------------------
+Thank you for your purchase! 🍿

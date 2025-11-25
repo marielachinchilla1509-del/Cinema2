@@ -1,18 +1,19 @@
 ----------------------------------------
-     🍫 CINEMA INVOICE
+      🍫 CINEMA INVOICE
 ----------------------------------------
-Invoice ID: P1764017641540
+Client: Carolina
+Invoice ID: P1764041121116
 Purchase: Snack Products
-Date: 24/11/2025 14:54
+Date: 24/11/2025 21:25
 Payment: Cash
 ----------------------------------------
 Products Sold:
-  CocaCola ($750,00)
+  - 1 x Dulsoso              @ $50,00
 ----------------------------------------
-SUBTOTAL: $750,00
-TAX (13%): $97,50
+SUBTOTAL: $44,25
+TAX (13%): $5,75
 ----------------------------------------
-TOTAL: $847,50
+TOTAL: $50,00
 
 ----------------------------------------
 Thank you for your purchase! 🍿

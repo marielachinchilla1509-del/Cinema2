@@ -1,19 +1,20 @@
 ----------------------------------------
-          🎟 CINEMA INVOICE
+      🎟 CINEMA UCR - Info. Empresarial
 ----------------------------------------
 Client: Carolina
 Client ID: 605010584
+Date: 24/11/2025 22:22
 ----------------------------------------
-Movie: DOLLHOUSE
-Room: 1
-Seat: 1
-Type: Adult
+Movie: NOW YOU SEE ME 3
+Location: Auditorio Ssur
+Ticket Type: General
+Seats (3): C3, C6, C8
 Payment: Cash
-Date: 24/11/2025 16:06
+Base Price (per ticket): $4,75
 ----------------------------------------
-PRICE: $4,50
-TAX (13%): $0,59
+SUBTOTAL: $14,25
+TAX (13%): $1,85
 ----------------------------------------
-TOTAL: $5,09
+TOTAL: $16,10
 ----------------------------------------
 Thank you for your purchase! 🍿
