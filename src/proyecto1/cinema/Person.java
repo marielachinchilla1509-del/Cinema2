@@ -16,10 +16,10 @@ import java.util.Date;
 public class Person {
 
     /* Indicates whether the person has any disability condition. */
-    private boolean disability;
+    boolean disability;
 
     /* Birth date of the person. */
-    private Date birthDay;
+    Date birthDay;
 
     /* Email contact address of the person. */
     private String email;
@@ -31,7 +31,7 @@ public class Person {
     private String name;
 
     /* Phone contact number of the person. */
-    private String phoneNumber;
+    String phoneNumber;
 
     /*
      * Constructor used to initialize all information of the person.

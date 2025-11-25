@@ -2,41 +2,69 @@ package ui;
 
 import proyecto1.cinema.Ticket;
 import proyecto1.cinema.TicketSalesModule;
+import proyecto1.cinema.Customer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SellTicketUI extends JFrame {
 
     private final TicketSalesModule module;
-
-    // Carpeta relativa donde se guardarán las facturas
     private final String INVOICE_FOLDER = "invoice";
+
+    // ==== CAMPOS PARA CLIENTE =====
+    private JTextField txtClientId;
+    private JTextField txtClientName;
+    private Customer foundCustomer = null;
+    private String customerName = "N/A";
 
     public SellTicketUI(TicketSalesModule module) {
         this.module = module;
 
         setTitle("🎬 Sell Ticket - Cinema POS");
-        setSize(600, 500);
+        setSize(600, 560);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
         setLayout(new BorderLayout(10, 10));
 
-        // ===== COLORS =====
         Color navy = new Color(0x001F3F);
         Color red = new Color(0xB22222);
         Color white = Color.WHITE;
+
+        // ===== PANEL DE CLIENTE ARRIBA =====
+        JPanel clientPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        clientPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(navy), 
+                "👤 Customer Validation", 
+                0, 0, new Font("Segoe UI", Font.BOLD, 12), navy
+        ));
+        clientPanel.setBackground(new Color(245, 245, 255));
+
+        txtClientId = new JTextField(10);
+        txtClientName = new JTextField("N/A", 18);
+        txtClientName.setEditable(false);
+        txtClientName.setBackground(Color.LIGHT_GRAY);
+
+        JButton btnValidate = new JButton("Validate");
+        btnValidate.setBackground(navy);
+        btnValidate.setForeground(Color.WHITE);
+
+        btnValidate.addActionListener(e -> validateClient());
+        txtClientId.addActionListener(e -> validateClient());
+
+        clientPanel.add(new JLabel("ID:"));
+        clientPanel.add(txtClientId);
+        clientPanel.add(btnValidate);
+        clientPanel.add(new JLabel("Client:"));
+        clientPanel.add(txtClientName);
+
+        add(clientPanel, BorderLayout.NORTH);
 
         // ===== MOVIE PRICES =====
         Map<String, Double> moviePrices = new HashMap<>();
@@ -47,18 +75,8 @@ public class SellTicketUI extends JFrame {
         moviePrices.put("NOW YOU SEE ME 3", 4.75);
         moviePrices.put("HARRY POTTER", 6.00);
 
-        // ===== TOP TITLE BAR =====
-        JLabel title = new JLabel("🎟 Ticket Selling Window", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setOpaque(true);
-        title.setBackground(navy);
-        title.setForeground(Color.WHITE);
-        title.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        add(title, BorderLayout.NORTH);
-
         // ===== FORM PANEL =====
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new GridLayout(6, 2, 15, 15));
+        JPanel formPanel = new JPanel(new GridLayout(6, 2, 15, 15));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         formPanel.setBackground(white);
 
@@ -85,19 +103,13 @@ public class SellTicketUI extends JFrame {
         JTextField txtPrice = new JTextField();
         txtPrice.setEditable(false);
 
-        // ===== Auto-fill price based on movie =====
         cbMovie.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                String selectedMovie = e.getItem().toString();
-                double price = moviePrices.getOrDefault(selectedMovie, 0.0);
-                txtPrice.setText(String.format("%.2f", price));
+                txtPrice.setText(String.format("%.2f", moviePrices.get(e.getItem())));
             }
         });
-
-        // set initial price
         cbMovie.setSelectedIndex(0);
 
-        // ===== ADD COMPONENTS =====
         formPanel.add(lblMovie); formPanel.add(cbMovie);
         formPanel.add(lblRoom); formPanel.add(cbRoom);
         formPanel.add(lblSeat); formPanel.add(cbSeat);
@@ -112,73 +124,122 @@ public class SellTicketUI extends JFrame {
         btnSave.setBackground(red);
         btnSave.setForeground(Color.WHITE);
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        btnSave.setFocusPainted(false);
         btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnSave.setPreferredSize(new Dimension(220, 50));
 
         btnSave.addActionListener((ActionEvent e) -> {
-            try {
-                double price = Double.parseDouble(txtPrice.getText().replace(",", "."));
-
-                Ticket t = new Ticket();
-                t.setMovieTitle(cbMovie.getSelectedItem().toString());
-                t.setRoomNumber(cbRoom.getSelectedItem().toString());
-                t.setSitNumber(cbSeat.getSelectedItem().toString());
-                t.setType(cbType.getSelectedItem().toString());
-                t.setPaymentMethod(cbPayment.getSelectedItem().toString());
-                t.setPrice(price);
-                t.setDate(new Date());
-                t.setStatus("Sold");
-
-                module.addTicket(t);
-
-                // Show invoice and save to file
-                showInvoice(t);
-
-                dispose();
-
-            } catch (NumberFormatException ex) {
+            if (foundCustomer == null) {
                 JOptionPane.showMessageDialog(this,
-                        "Price could not be loaded.",
-                        "Input Error", JOptionPane.ERROR_MESSAGE);
+                        "❌ You must validate a customer before selling.",
+                        "Customer Required", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            double price = Double.parseDouble(txtPrice.getText().replace(",", "."));
+            Ticket t = new Ticket();
+            t.setMovieTitle(cbMovie.getSelectedItem().toString());
+            t.setRoomNumber(cbRoom.getSelectedItem().toString());
+            t.setSitNumber(cbSeat.getSelectedItem().toString());
+            t.setType(cbType.getSelectedItem().toString());
+            t.setPaymentMethod(cbPayment.getSelectedItem().toString());
+            t.setPrice(price);
+            t.setDate(new Date());
+            t.setStatus("Sold");
+
+            module.addTicket(t);
+
+            showInvoice(t);
+            dispose();
         });
 
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setBackground(white);
-        bottomPanel.add(btnSave);
-        add(bottomPanel, BorderLayout.SOUTH);
+        JPanel bottom = new JPanel();
+        bottom.setBackground(white);
+        bottom.add(btnSave);
+        add(bottom, BorderLayout.SOUTH);
     }
 
-    // ====== INVOICE WINDOW ======
+    // ======================================================
+    // CLIENT SEARCH FROM FILE (REUTILIZADO DEL PRODUCT MODULE)
+    // ======================================================
+    private Customer searchCustomerFromFile(String id) {
+        File file = new File("customers.txt");
+        if (!file.exists()) return null;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            String name=null,email=null,phone=null;
+            boolean vip=false;
+
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("ID: ") && line.substring(4).trim().equals(id)) {
+
+                    line = br.readLine();
+                    if (line != null && line.startsWith("Name: "))
+                        name = line.substring(6).trim();
+
+                    line = br.readLine();
+                    if (line != null && line.startsWith("Email: "))
+                        email = line.substring(7).trim();
+
+                    line = br.readLine();
+                    if (line != null && line.startsWith("Phone: "))
+                        phone = line.substring(7).trim();
+
+                    line = br.readLine();
+                    if (line != null && line.startsWith("VIP: "))
+                        vip = Boolean.parseBoolean(line.substring(5).trim());
+
+                    br.readLine(); // membership
+                    br.readLine(); // ---- separator
+
+                    return new Customer(id, name, email, phone, vip);
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return null;
+    }
+
+    private void validateClient() {
+        String id = txtClientId.getText().trim();
+
+        if (id.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter a valid ID.");
+            return;
+        }
+
+        Customer c = searchCustomerFromFile(id);
+
+        if (c == null) {
+            foundCustomer = null;
+            customerName = "N/A";
+            txtClientName.setText("Not Found");
+            JOptionPane.showMessageDialog(this, "❌ Customer not found.");
+        } else {
+            foundCustomer = c;
+            customerName = c.getName();
+            txtClientName.setText(customerName);
+            JOptionPane.showMessageDialog(this, "✅ Customer Found: " + customerName);
+        }
+    }
+
+    // =========================================================
+    // FACTURA MODIFICADA — AHORA MUESTRA CLIENTE
+    // =========================================================
     private void showInvoice(Ticket t) {
         JFrame invoiceFrame = new JFrame("🧾 Ticket Invoice");
-        invoiceFrame.setSize(400, 500);
+        invoiceFrame.setSize(380, 520);
         invoiceFrame.setLocationRelativeTo(null);
-        invoiceFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        JLabel header = new JLabel("🎬 CINEMA INVOICE", SwingConstants.CENTER);
-        header.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        header.setForeground(new Color(0x001F3F));
-        panel.add(header, BorderLayout.NORTH);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
-        JTextArea textArea = new JTextArea();
-        textArea.setFont(new Font("Consolas", Font.PLAIN, 16));
-        textArea.setEditable(false);
-        textArea.setBackground(Color.WHITE);
-
         double tax = t.getPrice() * 0.13;
         double total = t.getPrice() + tax;
 
-        String invoiceContent = 
+        String invoiceContent =
                 "----------------------------------------\n" +
-                "         🎟  CINEMA INVOICE\n" +
+                "          🎟 CINEMA INVOICE\n" +
+                "----------------------------------------\n" +
+                "Client: " + customerName + "\n" +
+                "Client ID: " + foundCustomer.getId() + "\n" +
                 "----------------------------------------\n" +
                 "Movie: " + t.getMovieTitle() + "\n" +
                 "Room: " + t.getRoomNumber() + "\n" +
@@ -194,80 +255,34 @@ public class SellTicketUI extends JFrame {
                 "----------------------------------------\n" +
                 "Thank you for your purchase! 🍿";
 
-        textArea.setText(invoiceContent);
+        JTextArea txt = new JTextArea(invoiceContent);
+        txt.setEditable(false);
+        txt.setFont(new Font("Consolas", Font.PLAIN, 16));
 
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setBorder(null);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        // ===== SAVE INVOICE BUTTON =====
-        JButton btnSaveInvoice = new JButton("Print Invoice");
-        btnSaveInvoice.setBackground(new Color(0x228B22));
-        btnSaveInvoice.setForeground(Color.WHITE);
-        btnSaveInvoice.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnSaveInvoice.setFocusPainted(false);
-        btnSaveInvoice.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnSaveInvoice.addActionListener(e -> saveInvoiceToFile(t, invoiceContent));
-
-        JButton btnClose = new JButton("Close");
-        btnClose.setBackground(new Color(0xB22222));
-        btnClose.setForeground(Color.WHITE);
-        btnClose.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnClose.setFocusPainted(false);
-        btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnClose.addActionListener(e -> invoiceFrame.dispose());
-
-        JPanel bottom = new JPanel(new FlowLayout());
-        bottom.setBackground(Color.WHITE);
-        bottom.add(btnSaveInvoice);
-        bottom.add(btnClose);
-        panel.add(bottom, BorderLayout.SOUTH);
-
-        invoiceFrame.add(panel);
+        invoiceFrame.add(new JScrollPane(txt));
         invoiceFrame.setVisible(true);
 
-        // Auto-save invoice
         saveInvoiceToFile(t, invoiceContent);
     }
 
-    // ===== SAVE INVOICE TO TXT FILE =====
-    private void saveInvoiceToFile(Ticket t, String invoiceContent) {
+    private void saveInvoiceToFile(Ticket t, String content) {
         try {
-            // Crear carpeta invoice si no existe
             File folder = new File(INVOICE_FOLDER);
             if (!folder.exists()) folder.mkdirs();
 
-            SimpleDateFormat fileSdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String fileName = "invoiceticket_" + fileSdf.format(t.getDate()) + ".txt";
+            File file = new File(folder,
+                    "invoice_" + System.currentTimeMillis() + ".txt");
 
-            File file = new File(folder, fileName);
-
-            FileWriter fileWriter = new FileWriter(file);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-
-            printWriter.println(invoiceContent);
-            printWriter.println("\n=== SYSTEM GENERATED INVOICE ===");
-            printWriter.println("Generated on: " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
-            printWriter.println("File: " + file.getAbsolutePath());
-
-            printWriter.close();
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
+            pw.println(content);
+            pw.close();
 
             JOptionPane.showMessageDialog(this,
-                "✅ Invoice saved successfully!\n" +
-                "File: " + file.getAbsolutePath(),
-                "Invoice Saved",
-                JOptionPane.INFORMATION_MESSAGE);
+                    "Invoice saved:\n" + file.getAbsolutePath());
 
-        } catch (IOException e) {
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                "❌ Error saving invoice: " + e.getMessage(),
-                "Save Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error saving file: " + ex.getMessage());
         }
-    }
-
-    // ===== MAIN =====
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SellTicketUI(new TicketSalesModule()).setVisible(true));
     }
 }

@@ -12,3 +12,17 @@ Phone: 89151049
 VIP: true
 Membership: PREMIUM
 ------------------------------
+ID: 605010584
+Name: Carolina
+Email: marielachinchilla1509
+Phone: 89682193
+VIP: true
+Membership: PRO
+------------------------------
+ID: 605010588
+Name: Mariela
+Email: carolina
+Phone: 86532102
+VIP: false
+Membership: None
+------------------------------

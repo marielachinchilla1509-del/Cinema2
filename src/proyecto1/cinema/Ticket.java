@@ -145,4 +145,8 @@ public class Ticket {
         System.out.println("Date: " + date);
         System.out.println("Status: " + status);
     }
+
+    public Object getCustomerName() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

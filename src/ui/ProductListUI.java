@@ -17,6 +17,7 @@ public class ProductListUI extends JFrame {
     private final String INVOICE_FOLDER = "invoices";
 
     public ProductListUI() {
+        // ... (Tu código ProductListUI original aquí, sin cambios)
         setTitle("Product Invoice List");
         setSize(700, 450);
         setLocationRelativeTo(null);
