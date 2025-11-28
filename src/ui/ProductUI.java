@@ -59,7 +59,7 @@ public class ProductUI extends JFrame {
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         backPanel.setBackground(white);
 
-        JButton btnBack = new JButton("⬅️ Back to Menu");
+        JButton btnBack = new JButton("⬅ Back to Menu");
         btnBack.setFont(new Font("Inter", Font.BOLD, 16));
         btnBack.setBackground(red);
         btnBack.setForeground(Color.WHITE);
@@ -76,14 +76,11 @@ public class ProductUI extends JFrame {
         setVisible(true); // Show main UI
     }
 
-    // *************************************************************************
-    // --- FILE METHODS (No ArrayList used) ---
-    // *************************************************************************
     /**
-     * Reads all products from the file.
-     *
-     * @return Vector<Product> List of products read.
-     */
+ * Reads all products from the file.
+ *
+ * @return List of products read.
+ */
     public static Vector<Product> readAllProductsFromFile() {
         Vector<Product> productsList = new Vector<>();
         File file = new File(PRODUCT_FILE);
@@ -340,7 +337,7 @@ public class ProductUI extends JFrame {
                 } // Only delete column editable
             };
             for (Product p : products) {
-                model.addRow(new Object[]{p.name, p.category, p.code, p.stock, "$" + String.format("%.2f", p.price), p.status, "🗑️"});
+                model.addRow(new Object[]{p.name, p.category, p.code, p.stock, "$" + String.format("%.2f", p.price), p.status, "🗑"});
             }
 
             JTable table = new JTable(model);

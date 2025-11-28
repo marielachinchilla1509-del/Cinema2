@@ -272,7 +272,7 @@ public class SellTicketUI extends JFrame {
         updateTotalLabel();
     }
 
-    /**
+    /*
      * MODIFICADO para mapear Basic (5%), Pro (10%), Premium (15%) y None (0%).
      */
     private double getDiscountPercentage() {
@@ -298,7 +298,7 @@ public class SellTicketUI extends JFrame {
         return subtotal * getDiscountPercentage();
     }
 
-    /**
+    /*
      * MODIFICADO para devolver el nivel real de membresía leído del archivo.
      */
     private String getMembershipLevel() {
@@ -326,7 +326,7 @@ public class SellTicketUI extends JFrame {
         }
     }
 
-    /**
+    /*
      * MODIFICADO para incluir la lectura del campo "Membership:" en el archivo.
      */
     private Customer searchCustomerFromFile(String id) {
@@ -395,7 +395,7 @@ public class SellTicketUI extends JFrame {
         return null;
     }
 
-    /**
+    /*
      * MODIFICADO para limpiar la variable de estado de membresía.
      */
     private void validateClient() {

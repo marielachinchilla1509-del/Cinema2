@@ -6,7 +6,7 @@ import java.net.URL;
 import java.io.IOException; 
 import javax.imageio.ImageIO; 
 
-/**
+/*
  * Main Dashboard for Proyecto1Cinema Redesigned
  * Optimized for 15" Touch Screen (1280x800 resolution focus)
  */

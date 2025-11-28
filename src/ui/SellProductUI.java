@@ -355,7 +355,7 @@ public class SellProductUI extends JFrame {
 		return card;
 	}
 
-	/**
+	/*
 	 * Adds a product to the current sale, updates total and stock.
 	 * @param p Product to add
 	 */
@@ -380,7 +380,7 @@ public class SellProductUI extends JFrame {
 	// ==========================================================
 	// CUSTOMER LOGIC
 	// ==========================================================
-	/**
+	/*
 	 * Searches for a customer by ID in the "customers.txt" file.
 	 * @param id Customer ID
 	 * @return Customer object if found, null otherwise
@@ -417,7 +417,7 @@ public class SellProductUI extends JFrame {
 		return null;
 	}
 
-	/**
+	/*
 	 * Validates the customer ID entered in the text field and updates UI.
 	 */
 	private void validateClient() {
@@ -454,21 +454,21 @@ public class SellProductUI extends JFrame {
 	// LÓGICA DE DESCUENTO Y MEMBRESÍA
 	// ==========================================================
 	
-	/** * Returns discount percentage based on customer membership. */
+	/* Returns discount percentage based on customer membership. */
 	private double getDiscountPercentage() {
 		if (foundCustomer == null) return 0.0;
 		// Si es VIP, 15% de descuento. Si no es VIP (Standard), 0% de descuento.
 		return foundCustomer.isVip() ? 0.15 : 0.0; 
 	}
 
-	/** * Returns membership level string. */
+	/* Returns membership level string. */
 	private String getMembershipLevel() {
 		if (foundCustomer == null) return "N/A";
 		// Si es VIP, es Premium. Si no es VIP, es Standard (Sin Descuento).
 		return foundCustomer.isVip() ? "Premium" : "Standard (0% Discount)";
 	}
 
-	/** Updates total label with tax and discount applied */
+	/* Updates total label with tax and discount applied */
 	private void updateTotalLabel() {
 		double subtotalBase = this.total;	
 		double discountAmount = getDiscountAmount(subtotalBase);
@@ -478,7 +478,7 @@ public class SellProductUI extends JFrame {
 		totalLabel.setText(String.format("Total (with Tax): $%.2f", totalFinal));
 	}
 
-	/** Calculates discount amount from subtotal */
+	/* Calculates discount amount from subtotal */
 	private double getDiscountAmount(double subtotal) {
 		return subtotal * getDiscountPercentage();
 	}
@@ -487,7 +487,7 @@ public class SellProductUI extends JFrame {
 	// ==========================================================
 	// FINISH PURCHASE
 	// ==========================================================
-	/**
+	/*
 	 * Completes the purchase, validates customer and products,
 	 * calculates totals, shows invoice, and saves it.
 	 */
