@@ -1,4 +1,13 @@
 ==========================================
-              Employee List              
+             Employee List                
 ==========================================
+
+EmployeeID: 1
+Name: mariela
+PersonalID: 605010584
+Email: marielachinchilla@
+Phone: 63524865
+Position: Seller
+Salary: 500.0
+------------------------------------------
 

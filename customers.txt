@@ -1,28 +1,14 @@
-ID: 118800760
-Name: Astrid Munguia
-Email: astridmunguia113@gmail.com
-Phone: 61655177
-VIP: true
-Membership: PREMIUM
+ID: 1
+Name: 1
+Email: 1
+Phone: 1
+VIP: false
+Membership: None
 ------------------------------
-ID: 119670088
-Name: buso
-Email: buso@gmail.com
-Phone: 89151049
-VIP: true
-Membership: PREMIUM
-------------------------------
-ID: 605010584
-Name: Carolina
-Email: marielachinchilla1509
+ID: 605010585
+Name: mariela
+Email: mariela@ucr.ac.cr
 Phone: 89682193
-VIP: true
-Membership: PRO
-------------------------------
-ID: 605010588
-Name: Mariela
-Email: carolina
-Phone: 86532102
 VIP: false
 Membership: None
 ------------------------------

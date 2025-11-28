@@ -1,5 +1,4 @@
 package ui;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -17,7 +16,7 @@ public class ProductUI extends JFrame {
     public ProductUI() {
         
         setTitle("🛒 Product Module");
-        setSize(1000, 650);
+        setSize(1100, 750); // Aumentamos el tamaño del frame principal para los botones más grandes
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -34,22 +33,24 @@ public class ProductUI extends JFrame {
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         add(title, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 30, 30));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
-        buttonPanel.setBackground(white);
-
+        // Contenedor para los dos botones centrados
+        JPanel twoButtonPanel = new JPanel(new GridLayout(1, 2, 50, 50)); // Separación aumentada a 50
+        twoButtonPanel.setBackground(white);
+        
         JButton btnRegister = createBigButton("➕ Register Product", navyBlue, white);
         JButton btnInventory = createBigButton("📦 View Inventory", navyBlue, white);
-        JButton btnSave = createBigButton("💾 Save Products (No-Op)", navyBlue, white);
-        JButton btnProductList = createBigButton("🧾 View Product Invoices", navyBlue, white);
         
-        buttonPanel.add(btnRegister);
-        buttonPanel.add(btnInventory);
-        buttonPanel.add(btnSave);
-        buttonPanel.add(btnProductList);
-        buttonPanel.add(new JPanel() {{ setBackground(white); }});
+        twoButtonPanel.add(btnRegister);
+        twoButtonPanel.add(btnInventory);
+        
+        // Usar GridBagLayout para centrar el twoButtonPanel
+        JPanel centerPanel = new JPanel(new GridBagLayout()); 
+        centerPanel.setBackground(white);
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 50, 0)); // Añadir padding vertical
+        centerPanel.add(twoButtonPanel);
 
-        add(buttonPanel, BorderLayout.CENTER);
+        add(centerPanel, BorderLayout.CENTER);
+
 
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         backPanel.setBackground(white);
@@ -66,10 +67,6 @@ public class ProductUI extends JFrame {
         
         btnRegister.addActionListener(e -> new RegisterProductUI());
         btnInventory.addActionListener(e -> new InventoryProductUI());
-        btnSave.addActionListener(e -> JOptionPane.showMessageDialog(this, 
-                "Products are saved automatically upon registration and deletion/sale.", 
-                "Info", JOptionPane.INFORMATION_MESSAGE)); 
-        btnProductList.addActionListener(e -> new ProductListUI().setVisible(true));
         
         setVisible(true);
     }
@@ -182,7 +179,7 @@ public class ProductUI extends JFrame {
     // --- CLASES INTERNAS: RegisterProductUI, InventoryProductUI, ProductListUI ---
     // *************************************************************************
     
-    public class RegisterProductUI extends JFrame { 
+    public class RegisterProductUI extends JFrame {  
         public RegisterProductUI() {
             setTitle("🛒 Register Product"); setSize(500, 650); setLocationRelativeTo(null);
             setDefaultCloseOperation(DISPOSE_ON_CLOSE); setLayout(new BorderLayout(10, 10));
@@ -224,13 +221,13 @@ public class ProductUI extends JFrame {
             JPanel bottom = new JPanel(); bottom.setBackground(Color.WHITE); bottom.add(btnSave); add(bottom, BorderLayout.SOUTH);
             setVisible(true);
         }
-         private JTextField createField(String placeholder) {
+           private JTextField createField(String placeholder) {
             JTextField tf = new JTextField(); tf.setFont(new Font("Segoe UI", Font.PLAIN, 18));
             tf.setBorder(BorderFactory.createTitledBorder(placeholder)); return tf;
         }
     }
     
-    public class InventoryProductUI extends JFrame { 
+    public class InventoryProductUI extends JFrame {  
         public InventoryProductUI() {
             setTitle("📦 Product Inventory"); setSize(750, 500); setLocationRelativeTo(null);
             setLayout(new BorderLayout(10, 10));
@@ -271,7 +268,7 @@ public class ProductUI extends JFrame {
         }
     }
     
-    public class ProductListUI extends JFrame { 
+    public class ProductListUI extends JFrame {  
         public ProductListUI() {
              setTitle("🧾 Product Invoices List"); setSize(500, 400); setLocationRelativeTo(null);
              setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -281,12 +278,19 @@ public class ProductUI extends JFrame {
     }
 
     private JButton createBigButton(String text, Color bg, Color fg) {
-        JButton button = new JButton(text); button.setFont(new Font("Inter", Font.BOLD, 22));
-        button.setBackground(bg); button.setForeground(fg); button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
-        button.setPreferredSize(new Dimension(350, 120));
+        JButton button = new JButton(text); 
+        button.setFont(new Font("Inter", Font.BOLD, 24)); // Aumentar tamaño de fuente
+        button.setBackground(bg); 
+        button.setForeground(fg); 
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40)); // Aumentar padding
+        
+        // ¡AQUÍ ESTÁ EL CAMBIO PRINCIPAL! Aumentar las dimensiones
+        button.setPreferredSize(new Dimension(400, 180)); 
+        
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setOpaque(true); button.setBorderPainted(false);
+        button.setOpaque(true); 
+        button.setBorderPainted(false);
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseEntered(java.awt.event.MouseEvent e) { button.setBackground(bg.darker()); }
             @Override public void mouseExited(java.awt.event.MouseEvent e) { button.setBackground(bg); }
