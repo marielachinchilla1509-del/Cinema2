@@ -1,5 +1,5 @@
 ==========================================
-             Employee List                
+             Employee List                
 ==========================================
 
 EmployeeID: 1
@@ -9,5 +9,23 @@ Email: marielachinchilla@
 Phone: 63524865
 Position: Seller
 Salary: 500.0
+------------------------------------------
+
+EmployeeID: DJ8K8
+Name: cristopher buso
+PersonalID: 119670088
+Email: cristopher.buso@ucr.ac.cr
+Phone: 89151049
+Position: Technical
+Salary: 700.0
+------------------------------------------
+
+EmployeeID: YJ2V3
+Name: Kendall Montero
+PersonalID: 604970282
+Email: kendall.monter@ucr.ac.cr
+Phone: 88670325
+Position: Administrator
+Salary: 1000.0
 ------------------------------------------
 

@@ -207,8 +207,8 @@ public class SellTicketUI extends JFrame {
     }
 
     private void addSeats() {
-        String[] rows = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", 
-            "L", "M", "N"};
+        String[] rows = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+                "L", "M", "N"};
         seatButtonsMap.clear();
 
         for (int r = 0; r < rows.length; r++) {
@@ -271,12 +271,41 @@ public class SellTicketUI extends JFrame {
         updateTotalLabel();
     }
 
+    private double getDiscountPercentage() {
+        if (foundCustomer == null) {
+            return 0.0;
+        }
+
+        // Mapeo de descuentos: VIP (true) -> Premium 15%, No VIP (false) -> Basic 5%
+        if (foundCustomer.isVip()) {
+            return 0.15; // 15% Premium
+        } else {
+            return 0.05; // 5% Basic
+        }
+    }
+
+    private double getDiscountAmount(double subtotal) {
+        return subtotal * getDiscountPercentage();
+    }
+
+    private String getMembershipLevel() {
+        if (foundCustomer == null) {
+            return "N/A";
+        }
+
+        // Mapeo simple: VIP -> Premium, No VIP -> Basic
+        return foundCustomer.isVip() ? "Premium" : "Basic";
+    }
+
     private void updateTotalLabel() {
         int numSeats = (currentSelectedSeat != null) ? 1 : 0;
         double subtotal = numSeats * currentBasePrice;
 
-        double tax = subtotal * 0.13;
-        double totalFinal = subtotal + tax;
+        double discount = getDiscountAmount(subtotal); // Obtener descuento
+        double subtotalAfterDiscount = subtotal - discount; // Aplicar descuento
+
+        double tax = subtotalAfterDiscount * 0.13;
+        double totalFinal = subtotalAfterDiscount + tax;
 
         if (numSeats == 0) {
             totalLabel.setText("Total (0 Seat): $0.00");
@@ -352,8 +381,13 @@ public class SellTicketUI extends JFrame {
             foundCustomer = c;
             customerName = c.getName();
             txtClientName.setText(customerName);
-            JOptionPane.showMessageDialog(this, "✅ Customer Found: "
-                    + customerName);
+            String level = getMembershipLevel();
+            double discount = getDiscountPercentage() * 100;
+            
+            JOptionPane.showMessageDialog(this,
+                    String.format("✅ Customer Found: %s\n🏷 Membership: %s (%.0f%% Discount)",
+                        customerName, level, discount));
+            updateTotalLabel();
         }
     }
 
@@ -388,14 +422,19 @@ public class SellTicketUI extends JFrame {
         t.setDate(new Date());
         t.setStatus("Sold");
 
-        double tax = subtotal * 0.13;
-        double totalFinal = subtotal + tax;
+        // --- CÁLCULOS CON DESCUENTO APLICADO ---
+        double discountRate = getDiscountPercentage();
+        double discountAmount = subtotal * discountRate;
+        double subtotalAfterDiscount = subtotal - discountAmount;
+
+        double tax = subtotalAfterDiscount * 0.13;
+        double totalFinal = subtotalAfterDiscount + tax;
 
         module.addTicket(t);
 
         markSeatAsSold(seat);
 
-        showInvoice(t, subtotal, tax, totalFinal);
+        showInvoice(t, subtotal, discountAmount, tax, totalFinal); // Parámetros actualizados
 
         currentSelectedSeat = null;
         updateTotalLabel();
@@ -414,16 +453,18 @@ public class SellTicketUI extends JFrame {
     }
 
     // =========================================================
-    // FACTURA CONSOLIDAD (MODIFICADA CON BOTÓN DE IMPRIMIR Y CERRAR)
+    // FACTURA CONSOLIDAD (MODIFICADA PARA INCLUIR DESCUENTO)
     // =========================================================
-    private void showInvoice(Ticket soldTicket, double subtotal, double tax,
+    private void showInvoice(Ticket soldTicket, double subtotal, double discountAmount, double tax,
             double totalFinal) {
         JFrame invoiceFrame = new JFrame("🧾 Ticket Invoice");
-        invoiceFrame.setSize(400, 500);
+        invoiceFrame.setSize(400, 550); 
         invoiceFrame.setLocationRelativeTo(null);
         invoiceFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String membership = getMembershipLevel();
+        double discountRate = getDiscountPercentage() * 100;
 
         String invoiceContent
                 = "----------------------------------------\n"
@@ -431,6 +472,7 @@ public class SellTicketUI extends JFrame {
                 + "----------------------------------------\n"
                 + "Client: " + customerName + "\n"
                 + "Client ID: " + foundCustomer.getId() + "\n"
+                + "Membership: " + membership + String.format(" (%.0f%%)\n", discountRate) 
                 + "Date: " + sdf.format(new Date()) + "\n"
                 + "----------------------------------------\n"
                 + "Movie: " + soldTicket.getMovieTitle() + "\n"
@@ -441,9 +483,12 @@ public class SellTicketUI extends JFrame {
                 + "Base Price: $" + String.format("%.2f", currentBasePrice) + "\n"
                 + "----------------------------------------\n"
                 + String.format("SUBTOTAL: $%.2f\n", subtotal)
+                + String.format("DISCOUNT: -$%.2f\n", discountAmount) // Descuento aplicado
+                + "----------------------------------------\n"
+                + String.format("SUBTOTAL NETO: $%.2f\n", (subtotal - discountAmount)) // Subtotal post-descuento
                 + String.format("TAX (13%%): $%.2f\n", tax)
                 + "----------------------------------------\n"
-                + String.format("TOTAL: $%.2f\n", totalFinal)
+                + String.format("TOTAL: $%.2f\n", totalFinal) // Total final con descuento y tax
                 + "----------------------------------------\n"
                 + "Thank you for your purchase! 🍿";
 
@@ -457,13 +502,13 @@ public class SellTicketUI extends JFrame {
         // Panel y botones
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
         // --- Botón de Imprimir ---
-        JButton btnPrint = new JButton("🖨️ Print Invoice");
+        JButton btnPrint = new JButton("🖨 Print Invoice");
         btnPrint.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnPrint.setBackground(navy);
         btnPrint.setForeground(Color.WHITE);
         btnPrint.addActionListener(e -> printInvoice(invoiceContent));
 
-        // --- Botón de Cerrar (NUEVO) ---
+        // --- Botón de Cerrar ---
         JButton btnClose = new JButton("❌ Close");
         btnClose.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnClose.setBackground(red);

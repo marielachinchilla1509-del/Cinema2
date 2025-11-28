@@ -12,3 +12,24 @@ Phone: 89682193
 VIP: false
 Membership: None
 ------------------------------
+ID: 000000000
+Name: Contado
+Email: cinema@ucr.ac.cr
+Phone: 00000000
+VIP: false
+Membership: None
+------------------------------
+ID: 1111111111
+Name: ContadoExtranjero
+Email: cinema@ucr.ac.cr
+Phone: 11111111
+VIP: false
+Membership: None
+------------------------------
+ID: 118800760
+Name: Astrid munguía
+Email: astrid.munguia@ucr.ac.cr
+Phone: 12345678
+VIP: true
+Membership: PREMIUM
+------------------------------

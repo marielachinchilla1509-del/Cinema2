@@ -1,0 +1,21 @@
+----------------------------------------
+      🍫 CINEMA INVOICE
+----------------------------------------
+Client: Astrid munguía
+Invoice ID: P1764302572624
+Purchase: Snack Products
+Date: 27/11/2025 22:02
+Payment: Cash
+----------------------------------------
+Products Sold:
+  - 1 x crepa con dulce de leche @ $8,00
+  - 1 x Coca                 @ $5,00
+  - 1 x Dulsoso              @ $50,00
+----------------------------------------
+SUBTOTAL: $63,00
+TAX (13%): $8,19
+----------------------------------------
+TOTAL: $71,19
+
+----------------------------------------
+Thank you for your purchase! 🍿

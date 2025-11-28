@@ -87,7 +87,7 @@ public class EmployeeUI extends JFrame {
         gbc.gridx = 0; // Columna 0 (debajo de Register)
         gbc.gridy = 1; // Fila 1
         gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.CENTER; // CLAVE: Centrado dentro de su celda (Columna 0)
+        gbc.anchor = GridBagConstraints.EAST; // CLAVE: Centrado dentro de su celda (Columna 0)
         centerPanel.add(btnSearch, gbc);
 
         add(centerPanel, BorderLayout.CENTER);
@@ -305,7 +305,7 @@ public class EmployeeUI extends JFrame {
         // --- 6. Position ---
         String[] positions = {"TicketStaff", "Seller", "Technical", "Administrator"};
         JComboBox<String> cbPosition = new JComboBox<>(positions);
-        cbPosition.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        cbPosition.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         cbPosition.setBorder(BorderFactory.createTitledBorder("Position"));
 
         // --- 7. Employee ID (Generated, LAST FIELD) ---
@@ -317,9 +317,9 @@ public class EmployeeUI extends JFrame {
         // ===============================================
         // AÑADIR CAMPOS AL PANEL EN EL ORDEN REQUERIDO:
         // ===============================================
-        panel.add(txtName);
         panel.add(idTypePanel);
         panel.add(txtIdPersonal);
+        panel.add(txtName);
         panel.add(txtEmail);
         panel.add(txtPhone);
         panel.add(cbPosition);

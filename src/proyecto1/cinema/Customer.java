@@ -70,6 +70,10 @@ public class Customer extends Person {
         this.invoices = new Invoice[0];
     }
 
+    public Customer(String id, String name, String email, String phone, String membership) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     /*
      * Retrieves customer VIP status.
      */
@@ -103,5 +107,9 @@ public class Customer extends Person {
         // Incluir la información de la superclase (Person)
         return "Customer{" + "vip=" + vip + ", customerId=" + customerId +
                  ", invoices=" + invoices + "} Person: " + super.toString();
+    }
+
+    public String getMembership() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

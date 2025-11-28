@@ -1,5 +1,7 @@
-Dulsoso;Snack;Dulce;1111;216;50.0;Active
+Dulsoso;Snack;Dulce;1111;215;50.0;Active
 Pan de coca;Snack;pandecoca;5421;2;100.0;Active
 Cebolla;Food;vegetal;1010;0;10.0;Active
-Coca;Soda;soda;5050;1;5.0;Active
-Dedos de queso premium;Food;pan;123;8;12.0;Active
+Coca;Soda;soda;5050;0;5.0;Active
+Dedos de queso premium;Food;pan;123;7;12.0;Active
+crepa con dulce de leche;Candy;tortilla de coso con dulce de leche;9909;19;8.0;Active
+coco;Candy;coco;6565656;1;20.0;Active
