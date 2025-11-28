@@ -1,0 +1,24 @@
+----------------------------------------
+      🎟 CINEMA UCR - Info. Empresarial
+----------------------------------------
+Client: mariela
+Client ID: 605010584
+Membership: Basic (5%)
+Date: 28/11/2025 01:16
+----------------------------------------
+Movie: WICKED
+Location: Auditorio Ssur
+Ticket Type: General
+Seat: A1
+Payment: Cash
+Base Price: $5,50
+----------------------------------------
+SUBTOTAL: $5,50
+DISCOUNT: -$0,28
+----------------------------------------
+SUBTOTAL NETO: $5,23
+TAX (13%): $0,68
+----------------------------------------
+TOTAL: $5,90
+----------------------------------------
+Thank you for your purchase! 🍿

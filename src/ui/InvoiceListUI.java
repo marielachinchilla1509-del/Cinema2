@@ -6,16 +6,37 @@ import java.awt.*;
 import java.io.File;
 import java.awt.Desktop;
 
+/**
+ * InvoiceListUI: A graphical interface for listing, searching, and opening
+ * ticket invoices stored as text files.
+ *
+ * Features:
+ * - Displays a table of invoice files (.txt) from the "invoice" folder.
+ * - Shows file size in KB.
+ * - Search/filter invoices by name.
+ * - Refresh invoice list.
+ * - Open selected invoice in the default system application.
+ */
 public class InvoiceListUI extends JFrame {
 
+    /** JTable displaying invoice files */
     private JTable table;
+
+    /** Table model for invoice data */
     private DefaultTableModel model;
+
+    /** Label showing total number of invoices */
     private JLabel counterLabel;
+
+    /** Search field to filter invoices by name */
     private JTextField searchField;
 
-    // Carpeta relativa dentro del proyecto
+    /** Relative path to invoice folder inside the project */
     private final String INVOICE_PATH = "invoice";
 
+    /**
+     * Constructor: Sets up the UI, initializes components, and loads invoices.
+     */
     public InvoiceListUI() {
         setTitle("Ticket Invoice List");
         setSize(700, 450);
@@ -50,7 +71,6 @@ public class InvoiceListUI extends JFrame {
         searchPanel.add(searchButton);
 
         topPanel.add(searchPanel, BorderLayout.EAST);
-
         add(topPanel, BorderLayout.NORTH);
 
         // ---------- TABLE ----------
@@ -63,7 +83,7 @@ public class InvoiceListUI extends JFrame {
         table.getTableHeader().setBackground(new Color(230, 230, 230));
         table.setSelectionBackground(new Color(200, 220, 255));
 
-        // 🔄 Column sorting
+        // 🔄 Column sorting enabled
         table.setAutoCreateRowSorter(true);
 
         add(new JScrollPane(table), BorderLayout.CENTER);
@@ -88,13 +108,18 @@ public class InvoiceListUI extends JFrame {
         openButton.addActionListener(e -> openSelectedInvoice());
         searchButton.addActionListener(e -> filterInvoices());
 
-        // Load at startup
+        // Load invoices at startup
         loadInvoices();
     }
 
     // -------------------------------------------
     // STYLE FOR ALL BUTTONS
     // -------------------------------------------
+    /**
+     * Applies consistent style to all buttons.
+     *
+     * @param btn JButton to style
+     */
     private void styleButton(JButton btn) {
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setBackground(new Color(60, 120, 210));
@@ -107,16 +132,20 @@ public class InvoiceListUI extends JFrame {
     // -------------------------------------------
     // LOAD ONLY TICKET INVOICES (.txt) FROM FOLDER
     // -------------------------------------------
+    /**
+     * Loads all invoice text files from the "invoice" folder
+     * and populates the table with file name and size in KB.
+     */
     private void loadInvoices() {
         model.setRowCount(0);
 
-        // Crear la carpeta si no existe
+        // Create folder if it does not exist
         File folder = new File(INVOICE_PATH);
         if (!folder.exists()) {
             folder.mkdirs();
         }
 
-        // Filtrar solo archivos .txt que no sean de productos
+        // Filter only .txt files excluding product invoices
         File[] files = folder.listFiles((dir, name) ->
                 name.toLowerCase().endsWith(".txt") &&
                 !name.toLowerCase().contains("invoice_product")
@@ -138,6 +167,9 @@ public class InvoiceListUI extends JFrame {
     // -------------------------------------------
     // SEARCH INVOICE BY NAME
     // -------------------------------------------
+    /**
+     * Filters the invoice table according to the search field text.
+     */
     private void filterInvoices() {
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
         table.setRowSorter(sorter);
@@ -154,6 +186,10 @@ public class InvoiceListUI extends JFrame {
     // -------------------------------------------
     // OPEN SELECTED .TXT INVOICE
     // -------------------------------------------
+    /**
+     * Opens the currently selected invoice file using the system default application.
+     * Shows warning if no row is selected or error if file cannot be opened.
+     */
     private void openSelectedInvoice() {
         int row = table.getSelectedRow();
         if (row == -1) {
@@ -189,10 +225,14 @@ public class InvoiceListUI extends JFrame {
     }
 
     // -------------------------------------------
-    // MAIN
+    // MAIN METHOD
     // -------------------------------------------
+    /**
+     * Main method to launch the InvoiceListUI.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new InvoiceListUI().setVisible(true));
     }
 }
-

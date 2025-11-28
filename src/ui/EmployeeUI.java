@@ -16,9 +16,9 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 public class EmployeeUI extends JFrame {
 
-    private Vector<Employee> employees = new Vector<>();
-    private JTable employeeTable;
-    private JFrame listWindow;
+    private Vector<Employee> employees = new Vector<>(); // Vector to store employee objects
+    private JTable employeeTable; // Table to display employee list
+    private JFrame listWindow; // Window for listing employees
 
     public EmployeeUI() {
 
@@ -31,7 +31,7 @@ public class EmployeeUI extends JFrame {
 
         // ==== COLORS ====
         Color red = new Color(139, 0, 0);
-        Color navyBlue = new Color(10, 25, 60);
+        Color navyBlue = new Color(100, 185, 230);
         Color black = new Color(0, 0, 0);
         Color white = Color.WHITE;
 
@@ -43,13 +43,13 @@ public class EmployeeUI extends JFrame {
         add(title, BorderLayout.NORTH);
 
         // ====================================================================
-        // ==== BUTTON PANEL (FINAL: 2 arriba, 1 abajo, COMPACTO) ====
+        // ==== BUTTON PANEL (FINAL: 2 top buttons, 1 bottom button, compact) ====
         // ====================================================================
         JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setBackground(white);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
-        // Dimensiones base para TODOS los botones (Tamaño grande y uniforme)
+        // Base dimensions for all buttons (large and uniform)
         int buttonWidth = 400;
         int buttonHeight = 220;
 
@@ -58,36 +58,36 @@ public class EmployeeUI extends JFrame {
         JButton btnSearch = createBigButton("🔍 Search Employee", navyBlue, white, buttonWidth, buttonHeight);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espacio entre botones muy compacto (10px)
+        gbc.insets = new Insets(10, 10, 10, 10); // Compact spacing between buttons
         gbc.fill = GridBagConstraints.NONE;
 
-        // --- FILA 1 (Botones Superiores: Register y List) ---
+        // --- ROW 1 (Top buttons: Register and List) ---
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
 
-        // 1. Register Button (Arriba a la izquierda)
+        // 1. Register Button (Top-left)
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST; // CLAVE: Empuja el botón hacia la derecha de su celda
+        gbc.anchor = GridBagConstraints.EAST; // Push the button to the right inside its cell
         centerPanel.add(btnRegister, gbc);
 
-        // 2. List Button (Arriba a la derecha)
+        // 2. List Button (Top-right)
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST; // CLAVE: Empuja el botón hacia la izquierda de su celda
+        gbc.anchor = GridBagConstraints.WEST; // Push the button to the left inside its cell
         centerPanel.add(btnList, gbc);
 
-        // --- FILA 2 (Botón: Search - Debajo de Register, de tamaño normal) ---
+        // --- ROW 2 (Button: Search - below Register) ---
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
-        // 3. Search Button (Abajo, a la izquierda)
-        gbc.gridx = 0; // Columna 0 (debajo de Register)
-        gbc.gridy = 1; // Fila 1
+        // 3. Search Button (Bottom-left)
+        gbc.gridx = 0; // Column 0 (below Register)
+        gbc.gridy = 1; // Row 1
         gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST; // CLAVE: Centrado dentro de su celda (Columna 0)
+        gbc.anchor = GridBagConstraints.EAST; // Align inside its cell
         centerPanel.add(btnSearch, gbc);
 
         add(centerPanel, BorderLayout.CENTER);
@@ -102,23 +102,24 @@ public class EmployeeUI extends JFrame {
         btnBack.setForeground(Color.WHITE);
         btnBack.setFocusPainted(false);
         btnBack.setPreferredSize(new Dimension(180, 40));
-        btnBack.addActionListener(e -> dispose());
+        btnBack.addActionListener(e -> dispose()); // Close this window
         backPanel.add(btnBack);
 
         add(backPanel, BorderLayout.SOUTH);
 
-        // EVENTOS
+        // ==== EVENT HANDLERS ====
         btnRegister.addActionListener(e -> openRegisterWindow());
         btnList.addActionListener(e -> listEmployees());
         btnSearch.addActionListener(e -> openSearchWindow());
 
+        // Load employees from file
         loadFromTxt();
         setVisible(true);
     }
 
     // ================= HELPER METHOD: createBigButton =================
     /**
-     * Implementación del createBigButton que acepta dimensiones personalizadas.
+     * Create a large button with custom dimensions, font, color, and hover effect.
      */
     private JButton createBigButton(String text, Color bg, Color fg, int width, int height) {
         JButton button = new JButton(text);
@@ -128,13 +129,15 @@ public class EmployeeUI extends JFrame {
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(40, 50, 40, 50));
 
-        // Dimensiones específicas
+        // Set specific dimensions
         button.setPreferredSize(new Dimension(width, height));
         button.setMinimumSize(new Dimension(width, height));
 
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setOpaque(true);
         button.setBorderPainted(false);
+
+        // Hover effect
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
@@ -149,21 +152,19 @@ public class EmployeeUI extends JFrame {
         return button;
     }
 
-    // El resto del código de la clase (generateEmployeeId, openRegisterWindow, listEmployees, etc.)
-    // se mantiene sin cambios.
-    // ================= GENERADOR DE ID ALFANUMÉRICO ÚNICO =================
+    // ================= GENERATE UNIQUE ALPHANUMERIC EMPLOYEE ID =================
     private String generateEmployeeId() {
         Random random = new Random();
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         int ID_LENGTH = 5;
         String newId;
 
+        // Repeat until unique ID is generated
         do {
             StringBuilder sb = new StringBuilder(ID_LENGTH);
             for (int i = 0; i < ID_LENGTH; i++) {
                 char charToAdd;
-
-                // Estructura: LLDLD (Letra, Letra, Dígito, Letra, Dígito)
+                // Pattern: LLDLD (Letter, Letter, Digit, Letter, Digit)
                 if (i == 0 || i == 1 || i == 3) {
                     charToAdd = characters.charAt(random.nextInt(26));
                 } else {
@@ -188,7 +189,7 @@ public class EmployeeUI extends JFrame {
 
     // ================= REGISTER UI =================
     private void openRegisterWindow() {
-        // La lógica del formulario de registro se mantiene intacta.
+        // Registration form window
         JFrame reg = new JFrame("➕ Register Employee");
         reg.setSize(500, 800);
         reg.setLocationRelativeTo(null);
@@ -208,31 +209,22 @@ public class EmployeeUI extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         panel.setBackground(Color.WHITE);
 
-        // --- 1. Full Name ---
+        // --- 1. Full Name (letters only) ---
         JTextField txtName = createField("Full Name");
         ((AbstractDocument) txtName.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                if (string == null) {
-                    return;
-                }
-                if (string.matches("[a-zA-Z\\sñÑáéíóúÁÉÍÓÚ]*")) {
-                    super.insertString(fb, offset, string, attr);
-                }
+                if (string == null) return;
+                if (string.matches("[a-zA-Z\\sñÑáéíóúÁÉÍÓÚ]*")) super.insertString(fb, offset, string, attr);
             }
-
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                if (text == null) {
-                    return;
-                }
-                if (text.matches("[a-zA-Z\\sñÑáéíóúÁÉÍÓÚ]*")) {
-                    super.replace(fb, offset, length, text, attrs);
-                }
+                if (text == null) return;
+                if (text.matches("[a-zA-Z\\sñÑáéíóúÁÉÍÓÚ]*")) super.replace(fb, offset, length, text, attrs);
             }
         });
 
-        // --- 2. ID Type ---
+        // --- 2. ID Type Radio Buttons ---
         JRadioButton rbNacional = new JRadioButton("National (9 Digits)");
         JRadioButton rbExtranjero = new JRadioButton("Foreigner (10 Digits)");
         ButtonGroup group = new ButtonGroup();
@@ -250,32 +242,24 @@ public class EmployeeUI extends JFrame {
         rbNacional.setBackground(Color.WHITE);
         rbExtranjero.setBackground(Color.WHITE);
 
-        // --- 3. Personal ID ---
+        // --- 3. Personal ID Field (numbers only) ---
         JTextField txtIdPersonal = createField("Personal ID");
 
         DocumentFilter numericIdFilter = new DocumentFilter() {
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                if (string == null) {
-                    return;
-                }
+                if (string == null) return;
                 replace(fb, offset, 0, string, attr);
             }
-
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                if (text == null) {
-                    return;
-                }
-
+                if (text == null) return;
                 int maxLen = rbNacional.isSelected() ? 9 : 10;
                 String currentText = fb.getDocument().getText(0, fb.getDocument().getLength());
                 String newText = currentText.substring(0, offset) + text + currentText.substring(offset + length);
-
                 if (text.matches("\\d+")) {
-                    if (newText.length() <= maxLen) {
-                        super.replace(fb, offset, length, text, attrs);
-                    } else {
+                    if (newText.length() <= maxLen) super.replace(fb, offset, length, text, attrs);
+                    else {
                         int over = newText.length() - maxLen;
                         super.replace(fb, offset, length, text.substring(0, text.length() - over), attrs);
                     }
@@ -287,36 +271,32 @@ public class EmployeeUI extends JFrame {
         rbNacional.addActionListener(e -> ((AbstractDocument) txtIdPersonal.getDocument()).setDocumentFilter(numericIdFilter));
         rbExtranjero.addActionListener(e -> ((AbstractDocument) txtIdPersonal.getDocument()).setDocumentFilter(numericIdFilter));
 
-        // --- 4. Email ---
+        // --- 4. Email Field ---
         JTextField txtEmail = createField("Email (must end in @ucr.ac.cr)");
 
-        // --- 5. Phone ---
+        // --- 5. Phone Field (8 digits only) ---
         JTextField txtPhone = createField("Phone (8 Digits)");
         ((AbstractDocument) txtPhone.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
                 String newText = fb.getDocument().getText(0, fb.getDocument().getLength()) + text;
-                if (text.matches("\\d*") && newText.length() <= 8) {
-                    super.replace(fb, offset, length, text, attrs);
-                }
+                if (text.matches("\\d*") && newText.length() <= 8) super.replace(fb, offset, length, text, attrs);
             }
         });
 
-        // --- 6. Position ---
+        // --- 6. Position ComboBox ---
         String[] positions = {"TicketStaff", "Seller", "Technical", "Administrator"};
         JComboBox<String> cbPosition = new JComboBox<>(positions);
         cbPosition.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         cbPosition.setBorder(BorderFactory.createTitledBorder("Position"));
 
-        // --- 7. Employee ID (Generated, LAST FIELD) ---
+        // --- 7. Employee ID Field (auto-generated, last field) ---
         JTextField txtEmployeeId = createField("Employee ID (5-digit Alphanumeric)");
         txtEmployeeId.setEditable(false);
         txtEmployeeId.setForeground(Color.BLUE);
         txtEmployeeId.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
-        // ===============================================
-        // AÑADIR CAMPOS AL PANEL EN EL ORDEN REQUERIDO:
-        // ===============================================
+        // Add fields to panel in required order
         panel.add(idTypePanel);
         panel.add(txtIdPersonal);
         panel.add(txtName);
@@ -325,21 +305,21 @@ public class EmployeeUI extends JFrame {
         panel.add(cbPosition);
         panel.add(txtEmployeeId);
 
-        // Generar y asignar el ID.
+        // Generate and set Employee ID
         String generatedId = generateEmployeeId();
         txtEmployeeId.setText(generatedId);
 
+        // Save Button
         JButton btnSave = new JButton("✅ Save Employee");
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 22));
         btnSave.setBackground(new Color(139, 0, 0));
         btnSave.setForeground(Color.WHITE);
 
         btnSave.addActionListener(e -> {
-
+            // Get field values
             String name = txtName.getText().trim();
             String idPersonal = txtIdPersonal.getText().trim();
             String employeeIdFinal = txtEmployeeId.getText();
-
             String email = txtEmail.getText().trim();
             String phone = txtPhone.getText().trim();
             String pos = (String) cbPosition.getSelectedItem();
@@ -350,13 +330,13 @@ public class EmployeeUI extends JFrame {
                 return;
             }
 
-            // VALIDATION: Email Strict Check
+            // VALIDATION: Email format
             if (!email.toLowerCase().endsWith("@ucr.ac.cr")) {
                 JOptionPane.showMessageDialog(reg, "❌ Email must end with @ucr.ac.cr.", "Invalid Email Format", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // VALIDATION: ID Personal (9 or 10 digits)
+            // VALIDATION: Personal ID length
             int expectedIdLength = rbNacional.isSelected() ? 9 : 10;
             if (idPersonal.length() != expectedIdLength) {
                 JOptionPane.showMessageDialog(reg,
@@ -366,7 +346,7 @@ public class EmployeeUI extends JFrame {
                 return;
             }
 
-            // VALIDATION: Phone number (8 digits)
+            // VALIDATION: Phone length
             if (phone.length() != 8) {
                 JOptionPane.showMessageDialog(reg,
                         "❌ Phone number must have exactly 8 digits.",
@@ -375,7 +355,7 @@ public class EmployeeUI extends JFrame {
                 return;
             }
 
-            // VALIDATION: Duplicate Personal IDs
+            // VALIDATION: Duplicate Personal ID
             for (Employee emp : employees) {
                 if (emp.getId().equalsIgnoreCase(idPersonal)) {
                     JOptionPane.showMessageDialog(reg, "❌ Personal ID (Cédula/Passport) already exists.", "Validation Error", JOptionPane.ERROR_MESSAGE);
@@ -383,31 +363,25 @@ public class EmployeeUI extends JFrame {
                 }
             }
 
+            // Assign salary based on position
             double salary;
             String posLower = pos.toLowerCase();
-
-            // Asignación de salarios
             switch (posLower) {
-                case "ticketstaff" ->
-                    salary = 500;
-                case "seller" ->
-                    salary = 500;
-                case "technical" ->
-                    salary = 700;
-                case "administrator" ->
-                    salary = 1000;
+                case "ticketstaff" -> salary = 500;
+                case "seller" -> salary = 500;
+                case "technical" -> salary = 700;
+                case "administrator" -> salary = 1000;
                 default -> {
                     JOptionPane.showMessageDialog(reg, "❌ Invalid Position selected.", "Validation Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
 
+            // Create Employee object and save
             Employee emp = new Employee();
             emp.setName(name);
             emp.setId(idPersonal);
-
             emp.setEmployeeId(employeeIdFinal);
-
             emp.setEmail(email);
             emp.setPhoneNumber(phone);
             emp.setPosition(pos);
@@ -419,9 +393,7 @@ public class EmployeeUI extends JFrame {
 
             JOptionPane.showMessageDialog(reg, "✅ Employee Registered Successfully! ID: " + employeeIdFinal);
 
-            if (listWindow != null && listWindow.isVisible()) {
-                updateEmployeeTable();
-            }
+            if (listWindow != null && listWindow.isVisible()) updateEmployeeTable();
 
             reg.dispose();
         });
@@ -442,7 +414,7 @@ public class EmployeeUI extends JFrame {
         return tf;
     }
 
-    // ================= LIST (JTABLE VERSION) =================
+    // ================= LIST EMPLOYEES (JTABLE) =================
     private void listEmployees() {
 
         if (listWindow == null || !listWindow.isVisible()) {
@@ -460,19 +432,16 @@ public class EmployeeUI extends JFrame {
             listWindow.add(title, BorderLayout.NORTH);
 
             employeeTable = new JTable();
-
             employeeTable.setFont(new Font("Inter", Font.PLAIN, 14));
             employeeTable.setRowHeight(30);
 
+            // Delete employee on click in last column
             employeeTable.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     int row = employeeTable.rowAtPoint(e.getPoint());
                     int col = employeeTable.columnAtPoint(e.getPoint());
-
-                    if (col == employeeTable.getColumnCount() - 1 && row >= 0) {
-                        deleteEmployee(row);
-                    }
+                    if (col == employeeTable.getColumnCount() - 1 && row >= 0) deleteEmployee(row);
                 }
             });
 
@@ -492,12 +461,11 @@ public class EmployeeUI extends JFrame {
         }
 
         updateEmployeeTable();
-
         listWindow.setVisible(true);
     }
 
     /**
-     * Method to load and update data in the JTable using the Vector.
+     * Load and update data in JTable from the employees vector.
      */
     private void updateEmployeeTable() {
 
@@ -519,15 +487,15 @@ public class EmployeeUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(data, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 7;
+                return column == 7; // Only Delete column editable
             }
         };
 
         employeeTable.setModel(model);
 
+        // Customize table header and column widths
         employeeTable.getTableHeader().setFont(new Font("Inter", Font.BOLD, 16));
         employeeTable.getTableHeader().setBackground(new Color(230, 230, 230));
-
         employeeTable.getColumnModel().getColumn(0).setPreferredWidth(100);
         employeeTable.getColumnModel().getColumn(1).setPreferredWidth(180);
         employeeTable.getColumnModel().getColumn(2).setPreferredWidth(150);
@@ -543,21 +511,20 @@ public class EmployeeUI extends JFrame {
 
         String idToSearch = JOptionPane.showInputDialog(this, "Enter Employee ID (e.g., A1B2C) or Personal ID:");
 
-        if (idToSearch == null || idToSearch.trim().isEmpty()) {
-            return;
-        }
+        if (idToSearch == null || idToSearch.trim().isEmpty()) return;
 
         for (Employee emp : employees) {
             if (emp.getEmployeeId().equalsIgnoreCase(idToSearch.trim()) || emp.getId().equalsIgnoreCase(idToSearch.trim())) {
 
+                // Show employee info if found
                 JOptionPane.showMessageDialog(this,
                         "FOUND! 🎯\n\nEmployee ID: " + emp.getEmployeeId()
-                        + "\nName: " + emp.getName()
-                        + "\nPersonal ID: " + emp.getId()
-                        + "\nEmail: " + emp.getEmail()
-                        + "\nPhone: " + emp.getPhoneNumber()
-                        + "\nPosition: " + emp.getPosition()
-                        + "\nSalary: $" + String.format("%.2f", emp.getSalary()),
+                                + "\nName: " + emp.getName()
+                                + "\nPersonal ID: " + emp.getId()
+                                + "\nEmail: " + emp.getEmail()
+                                + "\nPhone: " + emp.getPhoneNumber()
+                                + "\nPosition: " + emp.getPosition()
+                                + "\nSalary: $" + String.format("%.2f", emp.getSalary()),
                         "Employee Found",
                         JOptionPane.INFORMATION_MESSAGE
                 );
@@ -568,7 +535,7 @@ public class EmployeeUI extends JFrame {
         JOptionPane.showMessageDialog(this, "Employee Not Found 😢", "Search Result", JOptionPane.ERROR_MESSAGE);
     }
 
-    // ================= DELETE EMPLOYEE (FROM TABLE) =================
+    // ================= DELETE EMPLOYEE FROM TABLE =================
     private void deleteEmployee(int index) {
 
         String nameToDelete = employees.get(index).getName();
@@ -592,12 +559,12 @@ public class EmployeeUI extends JFrame {
         }
     }
 
-    // ================= SAVE TO TXT (AUTOMATIC) =================
+    // ================= SAVE EMPLOYEES TO TXT FILE =================
     private void saveToTxt() {
         try (PrintWriter pw = new PrintWriter(new FileWriter("employees.txt", false))) {
 
             pw.println("==========================================");
-            pw.println("             Employee List                ");
+            pw.println("             Employee List                ");
             pw.println("==========================================\n");
 
             for (Employee emp : employees) {
@@ -616,7 +583,7 @@ public class EmployeeUI extends JFrame {
         }
     }
 
-    // ================= LOAD FROM TXT (AUTOMATIC) =================
+    // ================= LOAD EMPLOYEES FROM TXT FILE =================
     private void loadFromTxt() {
         try (BufferedReader br = new BufferedReader(new FileReader("employees.txt"))) {
 
@@ -633,25 +600,15 @@ public class EmployeeUI extends JFrame {
                     String idStr = line.substring(11).trim();
                     emp.setEmployeeId(idStr);
                 } else if (line.startsWith("Name:")) {
-                    if (emp != null) {
-                        emp.setName(line.substring(6).trim());
-                    }
+                    if (emp != null) emp.setName(line.substring(6).trim());
                 } else if (line.startsWith("PersonalID:")) {
-                    if (emp != null) {
-                        emp.setId(line.substring(11).trim());
-                    }
+                    if (emp != null) emp.setId(line.substring(11).trim());
                 } else if (line.startsWith("Email:")) {
-                    if (emp != null) {
-                        emp.setEmail(line.substring(6).trim());
-                    }
+                    if (emp != null) emp.setEmail(line.substring(6).trim());
                 } else if (line.startsWith("Phone:")) {
-                    if (emp != null) {
-                        emp.setPhoneNumber(line.substring(6).trim());
-                    }
+                    if (emp != null) emp.setPhoneNumber(line.substring(6).trim());
                 } else if (line.startsWith("Position:")) {
-                    if (emp != null) {
-                        emp.setPosition(line.substring(10).trim());
-                    }
+                    if (emp != null) emp.setPosition(line.substring(10).trim());
                 } else if (line.startsWith("Salary:")) {
                     if (emp != null) {
                         try {
@@ -667,7 +624,7 @@ public class EmployeeUI extends JFrame {
             }
 
         } catch (FileNotFoundException e) {
-            // Archivo no encontrado, lista vacía.
+            // File not found, start with empty list
         } catch (Exception e) {
             System.err.println("Error loading employee data: " + e.getMessage());
             JOptionPane.showMessageDialog(this, "Error loading employee data from file.", "File Error", JOptionPane.ERROR_MESSAGE);

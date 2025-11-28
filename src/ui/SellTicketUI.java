@@ -28,6 +28,7 @@ public class SellTicketUI extends JFrame {
     private JTextField txtClientName;
     private Customer foundCustomer = null;
     private String customerName = "N/A";
+    private String foundMembershipLevel = "None"; // <-- NUEVA VARIABLE: Almacena el nivel de membresía real
 
     // ==== CAMPOS PARA TIQUETE =====
     private JComboBox<String> cbMovie;
@@ -271,16 +272,25 @@ public class SellTicketUI extends JFrame {
         updateTotalLabel();
     }
 
+    /**
+     * MODIFICADO para mapear Basic (5%), Pro (10%), Premium (15%) y None (0%).
+     */
     private double getDiscountPercentage() {
         if (foundCustomer == null) {
             return 0.0;
         }
 
-        // Mapeo de descuentos: VIP (true) -> Premium 15%, No VIP (false) -> Basic 5%
-        if (foundCustomer.isVip()) {
-            return 0.15; // 15% Premium
-        } else {
-            return 0.05; // 5% Basic
+        // Mapeo de descuentos basado en el nivel real leído del archivo
+        switch (foundMembershipLevel) {
+            case "Premium":
+                return 0.15; // 15%
+            case "Pro":
+                return 0.10; // 10%
+            case "Basic":
+                return 0.05; // 5%
+            case "None":
+            default:
+                return 0.0; // 0% para clientes sin membresía o nivel no reconocido
         }
     }
 
@@ -288,13 +298,15 @@ public class SellTicketUI extends JFrame {
         return subtotal * getDiscountPercentage();
     }
 
+    /**
+     * MODIFICADO para devolver el nivel real de membresía leído del archivo.
+     */
     private String getMembershipLevel() {
         if (foundCustomer == null) {
             return "N/A";
         }
 
-        // Mapeo simple: VIP -> Premium, No VIP -> Basic
-        return foundCustomer.isVip() ? "Premium" : "Basic";
+        return foundMembershipLevel;
     }
 
     private void updateTotalLabel() {
@@ -314,9 +326,13 @@ public class SellTicketUI extends JFrame {
         }
     }
 
+    /**
+     * MODIFICADO para incluir la lectura del campo "Membership:" en el archivo.
+     */
     private Customer searchCustomerFromFile(String id) {
         File file = new File("customers.txt");
         if (!file.exists()) {
+            this.foundMembershipLevel = "None"; // Limpiar si el archivo no existe
             return null;
         }
 
@@ -324,48 +340,70 @@ public class SellTicketUI extends JFrame {
             String line;
             String name = null, email = null, phone = null;
             boolean vip = false;
+            String membership = "None"; // Temporal para la lectura
 
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("ID: ") && line.substring(4).trim().equals(id)) {
+                    
+                    // Lee Name
                     line = br.readLine();
                     if (line != null
                             && line.startsWith("Name: ")) {
                         name = line.substring(6).trim();
                     }
+                    // Lee Email
                     line = br.readLine();
                     if (line != null
                             && line.startsWith("Email: ")) {
                         email = line.substring(7).trim();
                     }
+                    // Lee Phone
                     line = br.readLine();
                     if (line != null
                             && line.startsWith("Phone: ")) {
                         phone
                                 = line.substring(7).trim();
                     }
+                    // Lee VIP
                     line = br.readLine();
                     if (line != null
                             && line.startsWith("VIP: ")) {
                         vip
                                 = Boolean.parseBoolean(line.substring(5).trim());
                     }
+                    
+                    // *** INICIO DE CAMBIO ***
+                    // Lee MEMBERSHIP
+                    line = br.readLine(); 
+                    if (line != null && line.startsWith("Membership: ")) {
+                        membership = line.substring(12).trim();
+                    }
+                    
+                    this.foundMembershipLevel = membership; // Asigna el nivel a la variable de instancia
+                    
+                    // *** FIN DE CAMBIO ***
 
-                    br.readLine();
-                    br.readLine();
+                    br.readLine(); // Salta la línea separadora "----------"
 
                     return new Customer(id, name, email, phone, vip);
                 }
             }
         } catch (Exception ignored) {
+            this.foundMembershipLevel = "None"; // Limpiar en caso de error
         }
+        this.foundMembershipLevel = "None"; // Limpiar si no se encuentra
         return null;
     }
 
+    /**
+     * MODIFICADO para limpiar la variable de estado de membresía.
+     */
     private void validateClient() {
         String id = txtClientId.getText().trim();
 
         if (id.isEmpty()) {
             txtClientName.setText("N/A");
+            foundMembershipLevel = "None"; // Limpiar estado
             JOptionPane.showMessageDialog(this, "Enter a valid ID.");
             return;
         }
@@ -376,12 +414,13 @@ public class SellTicketUI extends JFrame {
             foundCustomer = null;
             customerName = "N/A";
             txtClientName.setText("Not Found");
+            foundMembershipLevel = "None"; // Limpiar estado
             JOptionPane.showMessageDialog(this, "❌ Customer not found.");
         } else {
             foundCustomer = c;
             customerName = c.getName();
             txtClientName.setText(customerName);
-            String level = getMembershipLevel();
+            String level = getMembershipLevel(); // Ahora usa el nivel real
             double discount = getDiscountPercentage() * 100;
             
             JOptionPane.showMessageDialog(this,
@@ -456,7 +495,7 @@ public class SellTicketUI extends JFrame {
     // FACTURA CONSOLIDAD (MODIFICADA PARA INCLUIR DESCUENTO)
     // =========================================================
     private void showInvoice(Ticket soldTicket, double subtotal, double discountAmount, double tax,
-            double totalFinal) {
+                double totalFinal) {
         JFrame invoiceFrame = new JFrame("🧾 Ticket Invoice");
         invoiceFrame.setSize(400, 550); 
         invoiceFrame.setLocationRelativeTo(null);

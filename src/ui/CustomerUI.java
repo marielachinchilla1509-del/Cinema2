@@ -12,39 +12,51 @@ import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.io.*;
 
+/**
+ * Graphical Interface Module for Customer Management.
+ * It allows registering, listing, searching, and deleting customers.
+ * Includes specific validation rules for ID type, phone number (8 digits),
+ * and email domain (UCR).
+ */
 public class CustomerUI extends JFrame {
 
     private Customer[] customers = new Customer[200];
     private Membership[] memberships = new Membership[200];
-    private int count = 0;
+    private int count = 0; // Tracks the current number of registered customers
 
     // Variables for dynamic list update
     private JTable customerTable;
     private JFrame listWindow;
 
+    /**
+     * Main constructor for the Customer module.
+     * Sets up the main visual interface, loads saved customer data,
+     * and links the primary buttons to their actions.
+     */
     public CustomerUI() {
 
+        // --- UI Setup ---
         setSize(1000, 650);
         setTitle("👤 Customer Module");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Closes this window only
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.WHITE);
 
-        // ==== COLORS ====
-        Color red = new Color(139, 0, 0);
-        Color navyBlue = new Color(10, 25, 60);
+        // --- Color Palette ---
+        Color red = new Color(139, 0, 0); // Dark red for 'Back'
+        Color navyBlue = new Color(100, 185, 230); // Light blue for main buttons
         Color black = new Color(0, 0, 0);
         Color white = Color.WHITE;
 
-        // ==== TITLE ====
+        // --- Module Title ---
         JLabel title = new JLabel("👤 Customer Module", SwingConstants.CENTER);
         title.setFont(new Font("Inter", Font.BOLD, 36));
         title.setForeground(black);
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         add(title, BorderLayout.NORTH);
 
-        // ==== BUTTON PANEL (ADJUSTED TO 2x2: btnSave removed) ====
+        // --- Main Button Panel (Grid 2x2) ---
         JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 30, 30));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
         buttonPanel.setBackground(white);
@@ -52,15 +64,13 @@ public class CustomerUI extends JFrame {
         JButton btnRegister = createBigButton("👤 Register Customer", navyBlue, white);
         JButton btnList = createBigButton("📄 Customer List", navyBlue, white);
         JButton btnSearch = createBigButton("🔍 Search Customer", navyBlue, white);
-        // btnSave has been removed
-
+        
         buttonPanel.add(btnRegister);
         buttonPanel.add(btnList);
         buttonPanel.add(btnSearch);
-        // The fourth space is left empty or the layout is adjusted
         add(buttonPanel, BorderLayout.CENTER);
 
-        // ==== BACK BUTTON ====
+        // --- Back Button to Main Menu ---
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         backPanel.setBackground(white);
 
@@ -69,19 +79,26 @@ public class CustomerUI extends JFrame {
         btnBack.setBackground(red);
         btnBack.setForeground(white);
         btnBack.setFocusPainted(false);
-        btnBack.addActionListener(e -> dispose());
+        btnBack.addActionListener(e -> dispose()); // Closes the current module window
 
         backPanel.add(btnBack);
         add(backPanel, BorderLayout.SOUTH);
 
-        // ==== EVENTS ====
+        // --- Event Configuration ---
         btnRegister.addActionListener(e -> openRegisterWindow());
         btnList.addActionListener(e -> listCustomers());
         btnSearch.addActionListener(e -> openSearchWindow());
-        // The save event was removed
-        loadDataOnStartup();
+        
+        loadDataOnStartup(); // Loads persistent data when the module starts
     }
 
+    /**
+     * Creates a large, styled button for the main module menu.
+     * @param text The text to display on the button.
+     * @param bg The background color.
+     * @param fg The foreground (text) color.
+     * @return The configured JButton object.
+     */
     private JButton createBigButton(String text, Color bg, Color fg) {
         JButton button = new JButton(text);
         button.setFont(new Font("Inter", Font.BOLD, 22));
@@ -97,10 +114,15 @@ public class CustomerUI extends JFrame {
     // ============================================================
     // REGISTER CUSTOMER
     // ============================================================
+    /**
+     * Opens the registration window for a new customer.
+     * Includes logic for ID type (9 or 10 digits), phone validation (8 digits),
+     * and UCR email domain check.
+     */
     private void openRegisterWindow() {
 
         JFrame reg = new JFrame("👤 Register Customer");
-        reg.setSize(500, 750); // Increased size to fit new fields
+        reg.setSize(500, 750); 
         reg.setLocationRelativeTo(null);
         reg.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         reg.setLayout(new BorderLayout(10, 10));
@@ -109,6 +131,7 @@ public class CustomerUI extends JFrame {
         Color navy = new Color(0x001F3F);
         Color red = new Color(0xB22222);
 
+        // --- Header Setup ---
         JLabel header = new JLabel("👤 Register Customer", SwingConstants.CENTER);
         header.setFont(new Font("Segoe UI", Font.BOLD, 26));
         header.setOpaque(true);
@@ -117,17 +140,17 @@ public class CustomerUI extends JFrame {
         header.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         reg.add(header, BorderLayout.NORTH);
 
-        JPanel form = new JPanel(new GridLayout(10, 1, 10, 10)); // More rows
+        JPanel form = new JPanel(new GridLayout(10, 1, 10, 10)); 
         form.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         form.setBackground(Color.WHITE);
 
-        // --- Radio Buttons for ID Type ---
+        // --- ID Type Selection ---
         JRadioButton rbNacional = new JRadioButton("National (9 Digits)");
         JRadioButton rbExtranjero = new JRadioButton("Foreigner (10 Digits)");
         ButtonGroup group = new ButtonGroup();
         group.add(rbNacional);
         group.add(rbExtranjero);
-        rbNacional.setSelected(true); // National by default
+        rbNacional.setSelected(true); 
 
         JPanel idTypePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         idTypePanel.setBackground(Color.WHITE);
@@ -139,10 +162,10 @@ public class CustomerUI extends JFrame {
         rbNacional.setBackground(Color.WHITE);
         rbExtranjero.setBackground(Color.WHITE);
 
-        // --- ID Field ---
+        // --- Input Fields ---
         JTextField txtId = createField("ID (Cédula/Passport)");
 
-        // MODIFICATION: Numeric-only restriction and 9/10 digit length
+        // Filter to ensure ID is numeric and respects the 9 or 10 digit limit
         DocumentFilter numericFilter = new DocumentFilter() {
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
@@ -158,13 +181,13 @@ public class CustomerUI extends JFrame {
                 String currentText = fb.getDocument().getText(0, fb.getDocument().getLength());
                 String newText = currentText.substring(0, offset) + text + currentText.substring(offset + length);
 
-                // 1. Accept only digits
+                // 1. Only allow digits
                 if (text.matches("\\d+")) {
-                    // 2. Limit length
+                    // 2. Limit the total length
                     if (newText.length() <= maxLen) {
                         super.replace(fb, offset, length, text, attrs);
                     } else {
-                        // Insert only the part that fits
+                        // Truncate the input if it exceeds the limit
                         int over = newText.length() - maxLen;
                         super.replace(fb, offset, length, text.substring(0, text.length() - over), attrs);
                     }
@@ -172,15 +195,11 @@ public class CustomerUI extends JFrame {
             }
         };
 
-        // Apply filter to ID field
+        // Apply ID filter and add listener to handle length change
         ((AbstractDocument) txtId.getDocument()).setDocumentFilter(numericFilter);
-
-        // Listener to recalculate max length when changing radio button
         rbNacional.addActionListener(e -> {
-            // Force the filter to apply the maximum length (this truncates if exceeded)
             ((AbstractDocument) txtId.getDocument()).setDocumentFilter(numericFilter);
             if (txtId.getText().length() > 9) {
-                // Notify the user if the current ID is too long for National
                 JOptionPane.showMessageDialog(reg,
                      "The current ID (10 digits) exceeds the limit for 'National' (9 digits). It will be truncated if you attempt to save.",
                      "Warning", JOptionPane.WARNING_MESSAGE);
@@ -195,15 +214,14 @@ public class CustomerUI extends JFrame {
         JTextField txtName = createField("Name");
         JTextField txtEmail = createField("Email");
 
-        // --- Phone Field ---
         JTextField txtPhone = createField("Phone (8 Digits)");
 
-        // MODIFICATION: 8-digit phone number restriction (numeric only)
+        // Filter to ensure phone number is numeric and exactly 8 digits
         ((AbstractDocument) txtPhone.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
                 String newText = fb.getDocument().getText(0, fb.getDocument().getLength()) + text;
-                // Accept only digits and limit to 8 characters
+                // Only allow digits and limit to 8 characters
                 if (text.matches("\\d*") && newText.length() <= 8) {
                     super.replace(fb, offset, length, text, attrs);
                 }
@@ -211,6 +229,7 @@ public class CustomerUI extends JFrame {
         });
 
 
+        // --- VIP Membership Options ---
         JCheckBox chkVip = new JCheckBox("VIP Customer");
         chkVip.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         chkVip.setBackground(Color.WHITE);
@@ -223,12 +242,13 @@ public class CustomerUI extends JFrame {
         cbMembership.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
         membershipPanel.add(cbMembership);
-        membershipPanel.setVisible(false);
+        membershipPanel.setVisible(false); // Hidden by default
 
+        // Toggles visibility of membership selector
         chkVip.addActionListener(e -> membershipPanel.setVisible(chkVip.
                 isSelected()));
 
-        // Add the new panels to the form
+        // --- Add components to form ---
         form.add(idTypePanel);
         form.add(txtId);
         form.add(txtName);
@@ -244,6 +264,7 @@ public class CustomerUI extends JFrame {
         btnSave.setBackground(red);
         btnSave.setForeground(Color.WHITE);
 
+        // --- Save Logic on Button Click ---
         btnSave.addActionListener(e -> {
 
             String id = txtId.getText().trim();
@@ -251,7 +272,7 @@ public class CustomerUI extends JFrame {
             String email = txtEmail.getText().trim();
             String requiredDomain = "@ucr.ac.cr";
 
-            // VALIDATION 1: Empty Fields
+            // VALIDATION 1: Check for Empty Fields
             if (id.isEmpty()
                     || txtName.getText().isEmpty()
                     || email.isEmpty()
@@ -264,7 +285,7 @@ public class CustomerUI extends JFrame {
                 return;
             }
 
-            // VALIDATION 2: ID and Phone correct length
+            // VALIDATION 2: Check ID and Phone Length
             int expectedIdLength = rbNacional.isSelected() ? 9 : 10;
             if (id.length() != expectedIdLength) {
                 JOptionPane.showMessageDialog(reg,
@@ -284,15 +305,14 @@ public class CustomerUI extends JFrame {
 
 
             // VALIDATION 3: UCR Email Domain Check
-            // Check: Email MUST end with "@ucr.ac.cr" and MUST have characters before it.
             if (!email.toLowerCase().endsWith(requiredDomain) || email.length() <= requiredDomain.length()) {
                  JOptionPane.showMessageDialog(reg,
                      "❌ The email must belong to the UCR domain and end with '" + requiredDomain + "'.",
                      "Validation Error", JOptionPane.ERROR_MESSAGE);
-                 return; // Stops the saving process if validation fails
+                 return; 
             }
 
-            // VALIDATION 4: Duplicate ID
+            // VALIDATION 4: Check for Duplicate ID
             for (int i = 0; i < count; i++) {
                 if (customers[i] != null && customers[i].getId().equals(id)) {
                     JOptionPane.showMessageDialog(reg,
@@ -303,6 +323,7 @@ public class CustomerUI extends JFrame {
                 }
             }
 
+            // --- Object Creation and Data Storage ---
             Customer c = new Customer();
             Membership m = new Membership();
 
@@ -316,15 +337,14 @@ public class CustomerUI extends JFrame {
                 m.setType(TypeMembership.valueOf(cbMembership.getSelectedItem().
                         toString()));
             } else {
-                m.setType(null);
+                m.setType(null); // No membership if not VIP
             }
 
             customers[count] = c;
             memberships[count] = m;
             count++;
 
-            // Automatic saving after registration
-            saveToTxt();
+            saveToTxt(); // Automatic saving after successful registration
 
             JOptionPane.showMessageDialog(reg, "✅ Customer Registered Successfully!");
             reg.dispose();
@@ -338,6 +358,11 @@ public class CustomerUI extends JFrame {
         reg.setVisible(true);
     }
 
+    /**
+     * Creates a standard text field with a titled border acting as a clear placeholder.
+     * @param placeholder The title/placeholder text.
+     * @return The configured JTextField.
+     */
     private JTextField createField(String placeholder) {
         JTextField tf = new JTextField();
         tf.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -346,17 +371,22 @@ public class CustomerUI extends JFrame {
     }
 
     // ============================================================
-    // LIST CUSTOMERS (MODIFIED FOR DYNAMIC UPDATE)
+    // LIST CUSTOMERS
     // ============================================================
+    /**
+     * Opens the window showing the list of registered customers in a JTable.
+     * It includes a listener to trigger customer deletion directly from the table.
+     */
     private void listCustomers() {
 
-        // 1. Create or show the list window
+        // 1. Initialize the window if it's the first time
         if (listWindow == null) {
             listWindow = new JFrame("📄 Customer List");
             listWindow.setSize(800, 500);
             listWindow.setLocationRelativeTo(null);
             listWindow.setLayout(new BorderLayout(10, 10));
 
+            // --- Header Setup ---
             JLabel title = new JLabel("📄 Customer List", SwingConstants.CENTER);
             title.setFont(new Font("Segoe UI", Font.BOLD, 26));
             title.setOpaque(true);
@@ -365,14 +395,12 @@ public class CustomerUI extends JFrame {
             title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
             listWindow.add(title, BorderLayout.NORTH);
 
-            // Initialize the table
             customerTable = new JTable();
 
-            // Configure styles and listener
             customerTable.setFont(new Font("Inter", Font.PLAIN, 15));
             customerTable.setRowHeight(35);
 
-            // Listener for the delete button (column 6)
+            // Listener to handle clicks on the 'Delete' column (column 6)
             customerTable.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -380,7 +408,7 @@ public class CustomerUI extends JFrame {
                     int col = customerTable.columnAtPoint(e.getPoint());
 
                     if (col == 6) {
-                        deleteCustomer(row); // Will delete and automatically update
+                        deleteCustomer(row); // Initiates deletion and update
                     }
                 }
             });
@@ -398,15 +426,15 @@ public class CustomerUI extends JFrame {
             listWindow.add(bottom, BorderLayout.SOUTH);
         }
 
-        // 2. Load or update the latest data in the table
+        // 2. Load or update the latest data
         updateCustomerTable();
 
-        // 3. Show the window
+        // 3. Display the window
         listWindow.setVisible(true);
     }
 
     /**
-     * Method to load and update data in the JTable.
+     * Loads and refreshes customer data into the JTable from the internal arrays.
      */
     private void updateCustomerTable() {
 
@@ -421,20 +449,20 @@ public class CustomerUI extends JFrame {
             data[i][4] = String.valueOf(customers[i].isVip());
             data[i][5] = memberships[i].getType() != null
                     ? memberships[i].getType().toString() : "None";
-            data[i][6] = "🗑";
+            data[i][6] = "🗑"; // Delete icon for the column
         }
 
-        // Create and set the model to force the update
+        // Creates a non-editable model, except for the 'Delete' column
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(data, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 6; // Only the 'Delete' column is "editable"
+                return column == 6; // Only the 'Delete' column allows interaction
             }
         };
 
         customerTable.setModel(model);
 
-        // Ensure the header updates if necessary
+        // Styling for the table header
         customerTable.getTableHeader().setFont(new Font("Inter", Font.BOLD, 16));
         customerTable.getTableHeader().setBackground(new Color(230, 230, 230));
     }
@@ -442,6 +470,11 @@ public class CustomerUI extends JFrame {
     // ============================================================
     // DELETE CUSTOMER
     // ============================================================
+    /**
+     * Displays a confirmation window and performs the permanent deletion
+     * of a customer from the array and the text file.
+     * @param index The array index (table row) of the customer to delete.
+     */
     private void deleteCustomer(int index) {
 
         JFrame confirm = new JFrame("🗑 Confirm Delete");
@@ -455,6 +488,7 @@ public class CustomerUI extends JFrame {
         lbl.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         confirm.add(lbl, BorderLayout.NORTH);
 
+        // Shows the details of the customer to be deleted
         JTextArea info = new JTextArea();
         info.setEditable(false);
         info.setBackground(Color.WHITE);
@@ -494,20 +528,20 @@ public class CustomerUI extends JFrame {
         btnCancel.addActionListener(e -> confirm.dispose());
 
         btnDelete.addActionListener(e -> {
-            // Array deletion logic
+            // Array deletion logic: shifts elements to overwrite the deleted one
             for (int i = index; i < count - 1; i++) {
                 customers[i] = customers[i + 1];
                 memberships[i] = memberships[i + 1];
             }
 
+            // Clears the last position and decrements the counter
             customers[count - 1] = null;
             memberships[count - 1] = null;
             count--;
 
-            // Save to TXT after deletion (updates the file)
-            updateTxtAfterDelete();
+            updateTxtAfterDelete(); // Saves the changes to the TXT file
 
-            // MODIFICATION: Update the table if the list window is open
+            // Updates the list window if it is currently open
             if (listWindow != null && listWindow.isVisible()) {
                 updateCustomerTable();
             }
@@ -526,12 +560,16 @@ public class CustomerUI extends JFrame {
     }
 
     // ============================================================
-    // SAVE / HELPERS
+    // DATA PERSISTENCE (SAVE / LOAD)
     // ============================================================
-    // openSaveWindow was removed. saveToTxt is now used automatically.
+    
+    /**
+     * Saves the current list of customers to the "customers.txt" file,
+     * overwriting previous content. Used for registration and deletion.
+     */
     private void saveToTxt() {
         try (PrintWriter pw = new PrintWriter(new FileWriter("customers.txt",
-                false))) {
+                false))) { // 'false' ensures overwriting
             for (int i = 0; i < count; i++) {
                 pw.println("ID: " + customers[i].getId());
                 pw.println("Name: " + customers[i].getName());
@@ -540,24 +578,28 @@ public class CustomerUI extends JFrame {
                 pw.println("VIP: " + customers[i].isVip());
                 pw.println("Membership: " + (memberships[i].getType() != null
                         ? memberships[i].getType() : "None"));
-                pw.println("------------------------------");
+                pw.println("------------------------------"); // Separator line
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error saving to file.");
         }
     }
 
+    /**
+     * Helper function to re-save the data file immediately after a customer is deleted.
+     */
     private void updateTxtAfterDelete() {
-        // Uses the same code as saveToTxt
         saveToTxt();
     }
 
     /**
-     * Automatic loading used when starting the module.
+     * Loads existing customer data from "customers.txt" when the module starts.
+     * This ensures data persistence across application sessions.
      */
     private void loadDataOnStartup() {
         try (BufferedReader br = new BufferedReader(new FileReader("customers.txt"))) {
 
+            // Reset arrays and counter before loading
             customers = new Customer[200];
             memberships = new Membership[200];
             count = 0;
@@ -566,6 +608,7 @@ public class CustomerUI extends JFrame {
             Customer c = null;
             Membership m = null;
 
+            // Reads line by line and parses data fields
             while ((line = br.readLine()) != null) {
                 line = line.trim();
                 if (line.startsWith("ID: ")) {
@@ -594,12 +637,13 @@ public class CustomerUI extends JFrame {
                         try {
                             m.setType(TypeMembership.valueOf(memType));
                         } catch (IllegalArgumentException ex) {
-                            m.setType(null); // unrecognized value -> null
+                            m.setType(null); // Ignore unrecognized values
                         }
                     } else {
                         m.setType(null);
                     }
                 } else if (line.startsWith("----------------")) {
+                    // Separator found: save the complete object to the array
                     if (c != null && m != null) {
                         customers[count] = c;
                         memberships[count] = m;
@@ -610,7 +654,7 @@ public class CustomerUI extends JFrame {
                 }
             }
 
-            // For the last record if there is no separator
+            // Handles the last record if the file ends without a separator
             if (c != null && m != null) {
                 customers[count] = c;
                 memberships[count] = m;
@@ -618,9 +662,9 @@ public class CustomerUI extends JFrame {
             }
 
         } catch (FileNotFoundException e) {
-            // No saved file: do not show error on startup
+            // File doesn't exist: start with an empty list (silent on startup)
         } catch (Exception e) {
-            // If something fails, do not break the app on startup; optional message:
+            // General error handling during loading
             JOptionPane.showMessageDialog(null, "Error loading customers on startup.");
         }
     }
@@ -628,6 +672,10 @@ public class CustomerUI extends JFrame {
     // ============================================================
     // SEARCH CUSTOMER
     // ============================================================
+    /**
+     * Opens a window to search for a customer by their ID.
+     * Displays all customer details if found, or an error message otherwise.
+     */
     private void openSearchWindow() {
 
         JFrame win = new JFrame("🔍 Search Customer");
@@ -636,6 +684,7 @@ public class CustomerUI extends JFrame {
         win.setLayout(new BorderLayout(10, 10));
         win.getContentPane().setBackground(Color.WHITE);
 
+        // --- Header Setup ---
         JLabel header = new JLabel("🔍 Search Customer by ID",
                 SwingConstants.CENTER);
         header.setFont(new Font("Segoe UI", Font.BOLD, 26));
@@ -678,6 +727,7 @@ public class CustomerUI extends JFrame {
 
         win.add(center, BorderLayout.CENTER);
 
+        // --- Search Logic on Button Click ---
         btnSearch.addActionListener(e -> {
             String id = txtIdSearch.getText().trim();
             if (id.isEmpty()) {
@@ -687,8 +737,10 @@ public class CustomerUI extends JFrame {
             }
 
             boolean found = false;
+            // Iterates through the customer array to find the matching ID
             for (int i = 0; i < count; i++) {
                 if (customers[i].getId().equals(id)) {
+                    // Displays customer details if found
                     txtResult.setText(
                             "ID: " + customers[i].getId() + "\n"
                                     + "Name: " + customers[i].getName() + "\n"

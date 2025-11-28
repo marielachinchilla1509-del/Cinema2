@@ -1,0 +1,24 @@
+----------------------------------------
+      🎟 CINEMA UCR - Info. Empresarial
+----------------------------------------
+Client: carolina
+Client ID: 605010585
+Membership: None (0%)
+Date: 28/11/2025 01:22
+----------------------------------------
+Movie: NOW YOU SEE ME 3
+Location: Auditorio Ssur
+Ticket Type: General
+Seat: C2
+Payment: Cash
+Base Price: $4,75
+----------------------------------------
+SUBTOTAL: $4,75
+DISCOUNT: -$0,00
+----------------------------------------
+SUBTOTAL NETO: $4,75
+TAX (13%): $0,62
+----------------------------------------
+TOTAL: $5,37
+----------------------------------------
+Thank you for your purchase! 🍿
